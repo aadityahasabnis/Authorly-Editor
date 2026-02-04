@@ -1,0 +1,9 @@
+export { Header } from './header';
+export { Footer } from './footer';
+export { HeroSection } from './hero-section';
+export { EditorDemoSection } from './editor-demo-section';
+export { FeaturesSection } from './features-section';
+export { ComparisonSection } from './comparison-section';
+export { BlocksSection } from './blocks-section';
+export { CodeExampleSection } from './code-example-section';
+export { CTASection } from './cta-section';
