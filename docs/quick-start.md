@@ -89,6 +89,48 @@ export default function MyEditor() {
 }
 ```
 
+## Cloud Image Uploads
+
+Enable cloud uploads to Cloudinary or S3 (optional):
+
+```tsx
+import { ContentBlocksEditor, createCloudinaryConfig } from 'authorly-editor';
+
+export default function MyEditor() {
+  const [content, setContent] = useState('');
+
+  // Configure Cloudinary upload
+  const uploadConfig = createCloudinaryConfig({
+    cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
+    uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
+    folder: 'blog-images',
+    maxSizeMB: 5,
+  });
+
+  return (
+    <ContentBlocksEditor
+      initialContent={content}
+      onChange={setContent}
+      imageUploadConfig={uploadConfig}
+      onUploadSuccess={(result) => {
+        console.log('Image uploaded:', result.url);
+      }}
+    />
+  );
+}
+```
+
+**Setup:**
+1. Sign up for free at [cloudinary.com](https://cloudinary.com)
+2. Get your Cloud Name and create an unsigned upload preset
+3. Add to `.env.local`:
+   ```
+   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloud-name
+   NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your-preset
+   ```
+
+See the [Image Upload Guide](./guides/image-uploads) for S3 and custom upload handlers.
+
 ## Rendering Saved Content
 
 Use the Renderer component to display your saved HTML:
@@ -109,6 +151,140 @@ export default function BlogPost({ content }: { content: string }) {
   );
 }
 ```
+
+## Styling Guide
+
+### Understanding Authorly's CSS
+
+**IMPORTANT:** Authorly comes with complete, production-ready CSS. You should **NOT** override or duplicate its styles.
+
+```tsx
+// ✅ CORRECT: Import Authorly's styles
+import 'authorly-editor/styles';
+
+// ❌ WRONG: Don't write custom CSS for editor content
+// The editor.css handles all layout, structure, and default styling
+```
+
+### What Authorly's CSS Includes
+
+The `authorly-editor/styles` import provides:
+
+- ✅ Complete editor layout and structure
+- ✅ All 13+ block type styles (headings, lists, code, tables, etc.)
+- ✅ Toolbar and menu styling
+- ✅ Dark mode support
+- ✅ Scrollbars, focus states, selections
+- ✅ Responsive design
+- ✅ Print styles
+
+**You don't need to write any CSS for content rendering!**
+
+### Customizing Colors Only
+
+If you want the editor to match your app's theme, override **ONLY** the CSS color variables:
+
+```css
+/* globals.css or your main CSS file */
+
+/* Override Authorly color variables */
+:root {
+  --cb-primary: #6366f1;        /* Your brand color */
+  --cb-primary-hover: #4f46e5;  /* Hover state */
+  --cb-bg: #ffffff;             /* Background */
+  --cb-text: #0f172a;           /* Text color */
+  --cb-border: #e2e8f0;         /* Border color */
+}
+
+.dark {
+  --cb-primary: #818cf8;
+  --cb-bg: #09090b;
+  --cb-text: #fafafa;
+  --cb-border: #27272a;
+}
+```
+
+**Never override structural styles like:**
+- ❌ `.cb-content` padding/margin
+- ❌ `.cb-block-*` layout/positioning
+- ❌ `.cb-toolbar` structure
+- ❌ Font sizes, line heights, spacing
+
+### Rendering HTML Correctly
+
+When using `ContentBlocksRenderer`, the HTML is rendered **as-is** with Authorly's styles:
+
+```tsx
+import { ContentBlocksRenderer } from 'authorly-editor';
+import 'authorly-editor/styles'; // Required!
+
+export default function Article({ content }: { content: string }) {
+  return (
+    <article>
+      {/* ✅ CORRECT: No wrapper classes needed */}
+      <ContentBlocksRenderer html={content} />
+      
+      {/* ❌ WRONG: Don't add prose/typography classes */}
+      {/* <div className="prose">
+        <ContentBlocksRenderer html={content} />
+      </div> */}
+    </article>
+  );
+}
+```
+
+**Why this matters:**
+- Authorly outputs semantic, clean HTML
+- The editor.css has carefully crafted typography
+- Adding wrapper classes (like Tailwind's `prose`) will conflict
+- Your content will look identical in editor and preview
+
+### Wrapper Styling (Optional)
+
+You can style the **container** around the editor, but don't touch editor internals:
+
+```tsx
+// ✅ CORRECT: Style the wrapper
+<div className="max-w-4xl mx-auto p-6 border rounded-lg">
+  <ContentBlocksEditor />
+</div>
+
+// ❌ WRONG: Override editor internals
+<div className="custom-editor">
+  <ContentBlocksEditor />
+</div>
+<style>{`.custom-editor .cb-content { padding: 0; }`}</style>
+```
+
+### Available CSS Variables
+
+For color theming, these variables are available:
+
+**Colors:**
+- `--cb-bg` - Background
+- `--cb-bg-secondary` - Secondary background
+- `--cb-bg-tertiary` - Tertiary background
+- `--cb-text` - Text color
+- `--cb-text-secondary` - Secondary text
+- `--cb-text-placeholder` - Placeholder text
+- `--cb-border` - Border color
+- `--cb-border-focus` - Focus border
+- `--cb-primary` - Primary/accent color
+- `--cb-primary-hover` - Primary hover state
+- `--cb-danger` - Error/delete color
+- `--cb-success` - Success color
+- `--cb-warning` - Warning color
+
+**Typography:**
+- `--cb-font-family` - Main font
+- `--cb-font-mono` - Code font
+
+**Spacing (Don't override unless necessary):**
+- `--cb-spacing-xs` to `--cb-spacing-xl`
+- `--cb-radius-sm` to `--cb-radius-lg`
+- `--cb-shadow-sm` to `--cb-shadow-lg`
+
+For more details, see the [Advanced Styling Guide](/docs/guides/styling).
 
 ## Adding Table of Contents
 

@@ -5,9 +5,6 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Highlight, themes } from 'prism-react-renderer';
 import {
-  ChevronLeft,
-  Moon,
-  Sun,
   ExternalLink,
   FileText,
   Layout,
@@ -20,11 +17,43 @@ import {
   X,
   Sparkles,
   ArrowRight,
+  Upload,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { SiteHeader, SiteFooter } from '@/components/layout';
 
 const examples = [
+  {
+    title: 'Cloud Image Upload',
+    description: 'Upload images to Cloudinary or S3 with progress tracking and optimization.',
+    icon: Upload,
+    tags: ['Cloudinary', 'S3', 'New'],
+    gradient: 'from-emerald-500 to-cyan-500',
+    href: '/test-upload',
+    code: `import { ContentBlocksEditor, createCloudinaryConfig } from 'authorly-editor';
+
+const uploadConfig = createCloudinaryConfig({
+  cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
+  folder: 'blog-images',
+  maxSizeMB: 5,
+});
+
+function Editor() {
+  return (
+    <ContentBlocksEditor
+      imageUploadConfig={uploadConfig}
+      onUploadSuccess={(result) => {
+        console.log('Uploaded:', result.url);
+      }}
+      onUploadError={(error) => {
+        console.error('Error:', error);
+      }}
+    />
+  );
+}`,
+  },
   {
     title: 'Blog Editor',
     description: 'A complete blog post editor with title, content, and metadata fields.',
@@ -211,22 +240,8 @@ function SyntaxHighlight({ code, language = 'tsx' }: { code: string; language?: 
 }
 
 export default function ExamplesPage() {
-  const [darkMode, setDarkMode] = useState(false);
   const [selectedExample, setSelectedExample] = useState<typeof examples[0] | null>(null);
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setDarkMode(prefersDark);
-  }, []);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
 
   const handleCopy = () => {
     if (selectedExample) {
@@ -238,34 +253,7 @@ export default function ExamplesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
-            >
-              <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span>Back to home</span>
-            </Link>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center">
-                <Code2 className="w-4 h-4 text-white" />
-              </div>
-              <h1 className="text-lg font-bold">Examples</h1>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setDarkMode(!darkMode)}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header */}
@@ -458,6 +446,8 @@ export default function ExamplesPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <SiteFooter />
     </div>
   );
 }

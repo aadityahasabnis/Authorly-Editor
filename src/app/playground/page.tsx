@@ -1,32 +1,34 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from 'next-themes';
 import {
   Copy,
   Check,
   Trash2,
-  Moon,
-  Sun,
   Code2,
   Eye,
   Split,
   Download,
-  ChevronLeft,
   Sparkles,
   FileCode,
   Type,
   Keyboard,
   Info,
   X,
+  Upload,
 } from 'lucide-react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { SiteHeader, SiteFooter } from '@/components/layout';
 import Editor from '@/components/Editor';
 import Renderer from '@/components/Renderer';
 import TableOfContents from '@/components/TableOfContents';
-import type { EditorRef } from '@/components/Editor';
+import type { EditorRef, UploadConfig, UploadResult, UploadProgress } from '@/components/Editor';
+
+// Note: Config object created manually to avoid importing from authorly-editor
+// until v0.1.9 is published with upload support
 
 const sampleContent = `
 <h1>Welcome to the Authorly Playground</h1>
@@ -68,26 +70,45 @@ const shortcuts = [
 ];
 
 export default function PlaygroundPage() {
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme } = useTheme();
   const [viewMode, setViewMode] = useState<ViewMode>('split');
   const [content, setContent] = useState(sampleContent);
   const [copied, setCopied] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [uploadEnabled, setUploadEnabled] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const editorRef = useRef<EditorRef>(null);
 
+  // Handle hydration
   useEffect(() => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setDarkMode(prefersDark);
+    setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+  // Configure image upload (optional)
+  const uploadConfig = useMemo<UploadConfig | undefined>(() => {
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset) {
+      console.log('Cloudinary not configured - using base64 fallback');
+      return undefined;
     }
-  }, [darkMode]);
+
+    setUploadEnabled(true);
+    // Create config object manually (compatible with authorly-editor v0.1.9+)
+    return {
+      provider: 'cloudinary',
+      cloudinary: {
+        cloudName,
+        uploadPreset,
+        folder: 'playground',
+      },
+      maxSizeBytes: 10 * 1024 * 1024, // 10MB
+      autoOptimize: true,
+      generateResponsive: true,
+    };
+  }, []);
 
   useEffect(() => {
     const text = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -117,21 +138,16 @@ export default function PlaygroundPage() {
     URL.revokeObjectURL(url);
   }, [content]);
 
-  return (
-    <div className="min-h-screen transition-theme bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Back link */}
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
-            >
-              <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span>Back to home</span>
-            </Link>
+  const isDark = mounted && theme === 'dark';
 
+  return (
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+      
+      {/* Sub-header for playground controls */}
+      <div className="sticky top-16 z-40 border-b border-border/40 bg-background/80 backdrop-blur-xl">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14">
             {/* Title */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
@@ -168,7 +184,7 @@ export default function PlaygroundPage() {
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Toolbar */}
       <div className="border-b border-border/40 bg-muted/20">
@@ -189,6 +205,14 @@ export default function PlaygroundPage() {
 
             {/* Right: Actions */}
             <div className="flex items-center gap-1">
+              {uploadEnabled && (
+                <>
+                  <div className="flex items-center gap-1.5 text-xs text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md mr-2">
+                    <Upload className="w-3 h-3" />
+                    <span className="hidden sm:inline">Cloud Upload</span>
+                  </div>
+                </>
+              )}
               <Button
                 variant="ghost"
                 size="sm"
@@ -228,19 +252,6 @@ export default function PlaygroundPage() {
               >
                 <Trash2 className="w-4 h-4" />
                 <span className="hidden sm:inline">Clear</span>
-              </Button>
-              <div className="w-px h-5 bg-border mx-1" />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setDarkMode(!darkMode)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                {darkMode ? (
-                  <Sun className="w-4 h-4" />
-                ) : (
-                  <Moon className="w-4 h-4" />
-                )}
               </Button>
             </div>
           </div>
@@ -323,9 +334,16 @@ export default function PlaygroundPage() {
                   ref={editorRef}
                   initialContent={content}
                   onChange={setContent}
-                  darkMode={darkMode}
+                  darkMode={isDark}
                   placeholder="Start writing..."
                   style={{ minHeight: '500px' }}
+                  imageUploadConfig={uploadConfig}
+                  onUploadSuccess={(result: UploadResult) => {
+                    console.log('Image uploaded:', result.url);
+                  }}
+                  onUploadError={(error: Error) => {
+                    console.error('Upload error:', error.message);
+                  }}
                 />
               </div>
             </div>
@@ -355,7 +373,7 @@ export default function PlaygroundPage() {
                 <div className="prose prose-slate dark:prose-invert max-w-none">
                   <Renderer
                     html={content}
-                    darkMode={darkMode}
+                    darkMode={isDark}
                     enableCodeCopy={true}
                     enableHeadingIds={true}
                   />
@@ -379,7 +397,7 @@ export default function PlaygroundPage() {
             <div className="p-4">
               <TableOfContents
                 html={content}
-                darkMode={darkMode}
+                darkMode={isDark}
                 title=""
                 maxLevel={3}
               />
@@ -430,6 +448,8 @@ export default function PlaygroundPage() {
           </div>
         </motion.div>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

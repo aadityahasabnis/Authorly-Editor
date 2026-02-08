@@ -1,9 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { SiteHeader, SiteFooter } from '@/components/layout';
 import {
-  Header,
-  Footer,
   HeroSection,
   EditorDemoSection,
   FeaturesSection,
@@ -13,25 +11,9 @@ import {
 } from '@/components/marketing';
 
 export default function HomePage() {
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    // Check system preference
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setDarkMode(prefersDark);
-  }, []);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
-
   return (
-    <div className="min-h-screen transition-theme">
-      <Header darkMode={darkMode} onToggleDarkMode={() => setDarkMode(!darkMode)} />
+    <div className="min-h-screen">
+      <SiteHeader />
       <main>
         <HeroSection />
         <EditorDemoSection />
@@ -40,7 +22,7 @@ export default function HomePage() {
         <ComparisonSection />
         <CTASection />
       </main>
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }

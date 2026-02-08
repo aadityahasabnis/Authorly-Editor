@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Menu, X, Moon, Sun, Github, Search, ExternalLink } from 'lucide-react';
+import { ChevronRight, Menu, X, Search, Github, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { SiteHeader } from '@/components/layout';
 import { siteConfig } from '@/config/site';
 import { docsNav } from '@/config/navigation';
 
@@ -17,21 +18,7 @@ export default function DocsLayout({
 }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-
-  useEffect(() => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setDarkMode(prefersDark);
-  }, []);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
 
   // Close sidebar on navigation
   useEffect(() => {
@@ -52,88 +39,35 @@ export default function DocsLayout({
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-16 items-center px-4 lg:px-6">
-          {/* Mobile menu button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="mr-2 lg:hidden"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
-
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 mr-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg shadow-primary/25">
-              <svg
-                className="w-4 h-4 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                />
-              </svg>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-lg">{siteConfig.name}</span>
-              <span className="hidden md:inline-flex px-2 py-0.5 text-xs font-medium rounded-full bg-primary/10 text-primary border border-primary/20">
-                Docs
-              </span>
-            </div>
-          </Link>
-
-          {/* Search Bar */}
-          <button
-            onClick={() => setSearchOpen(true)}
-            className="hidden md:flex items-center gap-2 h-9 w-64 px-3 text-sm text-muted-foreground bg-muted/50 border rounded-lg hover:bg-muted hover:border-primary/30 transition-all"
-          >
-            <Search className="w-4 h-4" />
-            <span className="flex-1 text-left">Search docs...</span>
-            <kbd className="hidden lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium bg-background border rounded">
-              <span className="text-xs">⌘</span>K
-            </kbd>
-          </button>
-
-          {/* Right side */}
-          <div className="ml-auto flex items-center gap-2">
-            <Link href="/playground" className="hidden sm:block">
-              <Button variant="ghost" size="sm" className="gap-2">
-                Playground
-              </Button>
-            </Link>
-            <a
-              href={siteConfig.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button variant="ghost" size="icon">
-                <Github className="h-5 w-5" />
-              </Button>
-            </a>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setDarkMode(!darkMode)}
-            >
-              {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-      </header>
+      {/* Use unified SiteHeader with mobile sidebar toggle */}
+      <SiteHeader />
+      
+      {/* Mobile sidebar toggle button - positioned below header */}
+      <div className="sticky top-16 z-40 flex lg:hidden h-12 items-center border-b bg-background/95 backdrop-blur px-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="mr-2"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+        >
+          {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </Button>
+        <span className="text-sm font-medium">Documentation</span>
+        
+        <button
+          onClick={() => setSearchOpen(true)}
+          className="ml-auto flex items-center gap-2 h-8 px-3 text-xs text-muted-foreground bg-muted/50 border rounded-lg"
+        >
+          <Search className="w-3.5 h-3.5" />
+          <span>Search...</span>
+        </button>
+      </div>
 
       <div className="flex">
         {/* Left Sidebar - Sticky */}
         <aside
           className={cn(
-            'fixed lg:sticky top-16 z-40 h-[calc(100vh-4rem)] w-72 xl:w-80 shrink-0 border-r border-border/50 bg-background/95 backdrop-blur-sm transition-transform duration-300 lg:translate-x-0',
+            'fixed lg:sticky top-16 z-30 h-[calc(100vh-4rem)] w-72 xl:w-80 shrink-0 border-r border-border/50 bg-background/95 backdrop-blur-sm transition-transform duration-300 lg:translate-x-0',
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >

@@ -1,31 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
+import { useTheme } from 'next-themes';
 import { Eye, Code2, Sparkles } from 'lucide-react';
+import type { UploadConfig, UploadResult } from '@/types/upload';
 
-const ContentBlocksEditor = dynamic(
-  () => import('authorly-editor').then((mod) => mod.ContentBlocksEditor),
-  { ssr: false, loading: () => <EditorSkeleton /> }
-);
+// Use wrapper component that supports upload props
+import Editor from '@/components/Editor';
 
 const ContentBlocksRenderer = dynamic(
   () => import('authorly-editor').then((mod) => mod.ContentBlocksRenderer),
   { ssr: false }
 );
 
-function EditorSkeleton() {
-  return (
-    <div className="animate-pulse space-y-4 p-6">
-      <div className="h-8 bg-muted rounded w-3/4"></div>
-      <div className="h-4 bg-muted rounded w-full"></div>
-      <div className="h-4 bg-muted rounded w-5/6"></div>
-      <div className="h-4 bg-muted rounded w-4/6"></div>
-      <div className="h-32 bg-muted rounded w-full mt-4"></div>
-    </div>
-  );
-}
+// Note: Config object created manually to avoid importing from authorly-editor
+// until v0.1.9 is published with upload support
 
 const defaultContent = `<h2>Welcome to Authorly Editor</h2>
 <p>A <strong>beautiful</strong>, block-based rich text editor that outputs clean, semantic HTML. Try editing this content!</p>
@@ -42,8 +33,40 @@ const defaultContent = `<h2>Welcome to Authorly Editor</h2>
 <p>Start typing to see the magic happen. Use <code>/</code> to insert different block types!</p>`;
 
 export function EditorDemoSection() {
+  const { theme } = useTheme();
   const [content, setContent] = useState(defaultContent);
   const [activeTab, setActiveTab] = useState<'edit' | 'preview' | 'html'>('edit');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && theme === 'dark';
+
+  // Configure image upload (optional - uses base64 fallback if not configured)
+  const uploadConfig = useMemo<UploadConfig | undefined>(() => {
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset) {
+      console.log('Cloudinary not configured - using base64 fallback for images');
+      return undefined;
+    }
+
+    // Create config object manually (compatible with authorly-editor v0.1.9+)
+    return {
+      provider: 'cloudinary',
+      cloudinary: {
+        cloudName,
+        uploadPreset,
+        folder: 'authorly-demo',
+      },
+      maxSizeBytes: 5 * 1024 * 1024, // 5MB
+      autoOptimize: true,
+      generateResponsive: true,
+    };
+  }, []);
 
   const tabs = [
     { id: 'edit' as const, label: 'Editor', icon: Sparkles },
@@ -114,19 +137,28 @@ export function EditorDemoSection() {
             </div>
 
             {/* Content */}
-            <div className="min-h-[400px] max-h-[500px] overflow-auto">
+            <div className="min-h-[500px] max-h-[600px] overflow-auto">
               {activeTab === 'edit' && (
-                <div className="p-2">
-                  <ContentBlocksEditor
+                <div className="p-4">
+                  <Editor
                     initialContent={content}
                     onChange={setContent}
+                    darkMode={isDark}
                     placeholder="Start writing something amazing..."
+                    imageUploadConfig={uploadConfig}
+                    onUploadSuccess={(result: UploadResult) => {
+                      console.log('Image uploaded successfully:', result.url);
+                    }}
+                    onUploadError={(error: Error) => {
+                      console.error('Upload error:', error.message);
+                    }}
                   />
                 </div>
               )}
               {activeTab === 'preview' && (
-                <div className="p-6 prose prose-slate dark:prose-invert max-w-none">
-                  <ContentBlocksRenderer html={content} />
+                <div className="p-6">
+                  {/* DO NOT use prose classes - editor has its own complete CSS */}
+                  <ContentBlocksRenderer html={content} darkMode={isDark} />
                 </div>
               )}
               {activeTab === 'html' && (
