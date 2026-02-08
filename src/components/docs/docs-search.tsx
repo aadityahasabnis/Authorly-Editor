@@ -11,19 +11,43 @@ interface SearchResult {
   section: string;
 }
 
-// Search index - this would ideally be generated at build time
+// Search index - matches the actual docs structure
 const searchIndex: SearchResult[] = [
+  // Getting Started
   { title: 'Introduction', description: 'Learn what Authorly is and why you should use it', href: '/docs', section: 'Getting Started' },
   { title: 'Installation', description: 'Install Authorly via npm, yarn, or pnpm', href: '/docs/installation', section: 'Getting Started' },
   { title: 'Quick Start', description: 'Get up and running with Authorly in minutes', href: '/docs/quick-start', section: 'Getting Started' },
-  { title: 'Editor Component', description: 'The main ContentBlocksEditor component', href: '/docs/editor', section: 'Components' },
-  { title: 'Renderer Component', description: 'Render your content as HTML', href: '/docs/renderer', section: 'Components' },
-  { title: 'Table of Contents', description: 'Generate navigation from your content', href: '/docs/table-of-contents', section: 'Components' },
-  { title: 'Editor Props', description: 'All available props for the editor', href: '/docs/editor-props', section: 'API Reference' },
-  { title: 'Editor Ref', description: 'Imperative methods and ref API', href: '/docs/editor-ref', section: 'API Reference' },
-  { title: 'Styling Guide', description: 'Customize the look of your editor', href: '/docs/styling', section: 'Guides' },
-  { title: 'Next.js Integration', description: 'Use Authorly with Next.js', href: '/docs/nextjs', section: 'Guides' },
-  { title: 'Keyboard Shortcuts', description: 'All available keyboard shortcuts', href: '/docs/keyboard-shortcuts', section: 'Guides' },
+  // Components
+  { title: 'Editor', description: 'The main ContentBlocksEditor component', href: '/docs/components/editor', section: 'Components' },
+  { title: 'Renderer', description: 'Render saved content as HTML', href: '/docs/components/renderer', section: 'Components' },
+  { title: 'Table of Contents', description: 'Auto-generate navigation from headings', href: '/docs/components/toc', section: 'Components' },
+  { title: 'Toolbar', description: 'Formatting toolbar component', href: '/docs/components/toolbar', section: 'Components' },
+  // Blocks
+  { title: 'Blocks Overview', description: 'All available block types', href: '/docs/blocks', section: 'Blocks' },
+  { title: 'Paragraph', description: 'Basic text paragraph block', href: '/docs/blocks/paragraph', section: 'Blocks' },
+  { title: 'Headings', description: 'H1-H6 heading blocks', href: '/docs/blocks/headings', section: 'Blocks' },
+  { title: 'Lists', description: 'Bullet, numbered, and checklist blocks', href: '/docs/blocks/lists', section: 'Blocks' },
+  { title: 'Code Block', description: 'Syntax-highlighted code blocks', href: '/docs/blocks/code', section: 'Blocks' },
+  { title: 'Blockquote', description: 'Quote blocks with attribution', href: '/docs/blocks/quote', section: 'Blocks' },
+  { title: 'Image', description: 'Image blocks with captions', href: '/docs/blocks/image', section: 'Blocks' },
+  { title: 'Video', description: 'Embed YouTube, Vimeo, or direct videos', href: '/docs/blocks/video', section: 'Blocks' },
+  { title: 'Table', description: 'Data table blocks', href: '/docs/blocks/table', section: 'Blocks' },
+  { title: 'Callout', description: 'Info, warning, error callout blocks', href: '/docs/blocks/callout', section: 'Blocks' },
+  { title: 'Accordion', description: 'Collapsible content sections', href: '/docs/blocks/accordion', section: 'Blocks' },
+  { title: 'Link Preview', description: 'Rich URL previews with Open Graph', href: '/docs/blocks/link-preview', section: 'Blocks' },
+  { title: 'Divider', description: 'Horizontal rule separator', href: '/docs/blocks/divider', section: 'Blocks' },
+  // API Reference
+  { title: 'Editor Props', description: 'All available props for the editor', href: '/docs/api/editor-props', section: 'API Reference' },
+  { title: 'Editor Ref', description: 'Imperative methods and ref API', href: '/docs/api/editor-ref', section: 'API Reference' },
+  { title: 'Renderer Props', description: 'Props for the renderer component', href: '/docs/api/renderer-props', section: 'API Reference' },
+  { title: 'Events', description: 'Editor event callbacks', href: '/docs/api/events', section: 'API Reference' },
+  // Guides
+  { title: 'Styling & Theming', description: 'Customize the look of your editor', href: '/docs/guides/styling', section: 'Guides' },
+  { title: 'Next.js Integration', description: 'Use Authorly with Next.js', href: '/docs/guides/nextjs', section: 'Guides' },
+  { title: 'Custom Blocks', description: 'Create your own block types', href: '/docs/guides/custom-blocks', section: 'Guides' },
+  { title: 'Image Uploads', description: 'Handle image uploads', href: '/docs/guides/image-uploads', section: 'Guides' },
+  { title: 'Keyboard Shortcuts', description: 'All available keyboard shortcuts', href: '/docs/guides/shortcuts', section: 'Guides' },
+  // Resources
   { title: 'Contributing', description: 'How to contribute to Authorly', href: '/docs/contributing', section: 'Resources' },
   { title: 'Changelog', description: 'Version history and updates', href: '/docs/changelog', section: 'Resources' },
   { title: 'Roadmap', description: 'Upcoming features and plans', href: '/docs/roadmap', section: 'Resources' },

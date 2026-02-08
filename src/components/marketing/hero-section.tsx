@@ -4,10 +4,27 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight, Check, Copy, Sparkles, Zap, Shield, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export function HeroSection() {
+interface HeroSectionProps {
+  version?: string;
+}
+
+export function HeroSection({ version }: HeroSectionProps) {
   const [copied, setCopied] = useState(false);
+  const [packageVersion, setPackageVersion] = useState(version || '0.1.5');
+
+  // Fetch version on client if not provided
+  useEffect(() => {
+    if (!version) {
+      fetch('/api/version')
+        .then(res => res.json())
+        .then(data => {
+          if (data.version) setPackageVersion(data.version);
+        })
+        .catch(() => {});
+    }
+  }, [version]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText('npm install authorly-editor');
@@ -47,7 +64,7 @@ export function HeroSection() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
               </span>
-              <span className="text-sm font-medium">v0.1.0 — Now available on npm</span>
+              <span className="text-sm font-medium">v{packageVersion} — Now available on npm</span>
             </motion.div>
 
             {/* Headline */}

@@ -134,54 +134,104 @@ function parseInlineMarkdown(content: string): string {
   const generateId = (text: string) => 
     text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-  return content
-    // Headers with IDs for anchor links
-    .replace(/^### (.*$)/gm, (_, title) => {
-      const id = generateId(title);
-      return `<h3 id="${id}" class="scroll-mt-20">${title}</h3>`;
-    })
-    .replace(/^## (.*$)/gm, (_, title) => {
-      const id = generateId(title);
-      return `<h2 id="${id}" class="scroll-mt-20">${title}</h2>`;
-    })
-    .replace(/^# (.*$)/gm, (_, title) => {
-      const id = generateId(title);
-      return `<h1 id="${id}" class="scroll-mt-20">${title}</h1>`;
-    })
-    // Inline code - styled better
-    .replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
+  let html = content;
+  
+  // Parse tables first (before other processing)
+  const tableRegex = /(\|.+\|\n)+/gm;
+  html = html.replace(tableRegex, (match) => {
+    const lines = match.trim().split('\n');
+    if (lines.length < 2) return match;
+    
+    const hasHeaderSeparator = lines[1].split('|').filter(c => c.trim()).every(c => c.trim().match(/^:?-+:?$/));
+    if (!hasHeaderSeparator) return match;
+    
+    const headers = lines[0].split('|').filter(c => c.trim()).map(c => c.trim());
+    const rows = lines.slice(2).map(line => 
+      line.split('|').filter(c => c.trim()).map(c => c.trim())
+    );
+    
+    const tableHTML = `
+      <div class="doc-table-wrapper">
+        <table class="doc-table">
+          <thead>
+            <tr>
+              ${headers.map(h => `<th>${h}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(row => `
+              <tr>
+                ${row.map(cell => `<td>${cell}</td>`).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+    return tableHTML;
+  });
+
+  // Headers with IDs for anchor links
+  html = html.replace(/^#### (.*$)/gm, (_, title) => {
+    const id = generateId(title);
+    return `<h4 id="${id}" class="doc-h4">${title}</h4>`;
+  });
+  html = html.replace(/^### (.*$)/gm, (_, title) => {
+    const id = generateId(title);
+    return `<h3 id="${id}" class="doc-h3">${title}</h3>`;
+  });
+  html = html.replace(/^## (.*$)/gm, (_, title) => {
+    const id = generateId(title);
+    return `<h2 id="${id}" class="doc-h2">${title}</h2>`;
+  });
+  html = html.replace(/^# (.*$)/gm, (_, title) => {
+    const id = generateId(title);
+    return `<h1 id="${id}" class="doc-h1">${title}</h1>`;
+  });
+
+  // Blockquotes
+  html = html.replace(/^> (.+)$/gm, '<blockquote class="doc-blockquote">$1</blockquote>');
+
+  // Process inline formatting (order matters)
+  html = html
     // Bold
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong class="doc-strong">$1</strong>')
     // Italic
-    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/\*([^*\n]+)\*/g, '<em class="doc-em">$1</em>')
+    // Inline code
+    .replace(/`([^`]+)`/g, '<code class="doc-inline-code">$1</code>')
     // Links
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="doc-link">$1</a>')
-    // Tables
-    .replace(/\|(.+)\|/g, (match) => {
-      const cells = match.split('|').filter(c => c.trim());
-      if (cells.every(c => c.trim().match(/^-+$/))) {
-        return ''; // Skip separator row
-      }
-      const tag = match.includes('---') ? 'th' : 'td';
-      return `<tr>${cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('')}</tr>`;
-    })
-    // Unordered lists
-    .replace(/^- (.*)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, '<ul class="doc-list">$&</ul>')
-    // Ordered lists
-    .replace(/^\d+\. (.*)$/gm, '<li>$1</li>')
-    // Paragraphs
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="doc-link">$1</a>');
+
+  // Lists
+  html = html.replace(/^- (.*)$/gm, '<li class="doc-li">$1</li>');
+  html = html.replace(/(<li class="doc-li">.*<\/li>\n?)+/g, '<ul class="doc-ul">$&</ul>');
+  html = html.replace(/^\d+\. (.*)$/gm, '<li class="doc-li">$1</li>');
+  html = html.replace(/^(\d+\. .*\n?)+/gm, (match) => {
+    const items = match.trim().split('\n').map(line => 
+      line.replace(/^\d+\. (.*)$/, '<li class="doc-li">$1</li>')
+    ).join('\n');
+    return `<ol class="doc-ol">${items}</ol>`;
+  });
+
+  // Paragraphs
+  html = html
     .split('\n\n')
     .map(block => {
       block = block.trim();
       if (!block) return '';
-      if (block.startsWith('<h') || block.startsWith('<ul') || block.startsWith('<ol') || block.startsWith('<table')) {
+      // Don't wrap these elements
+      if (block.startsWith('<h') || 
+          block.startsWith('<ul') || 
+          block.startsWith('<ol') || 
+          block.startsWith('<div class="doc-table') ||
+          block.startsWith('<blockquote') ||
+          block.startsWith('<pre')) {
         return block;
       }
-      return `<p class="doc-paragraph">${block}</p>`;
+      return `<p class="doc-p">${block}</p>`;
     })
-    .join('\n')
-    // Clean up empty paragraphs
-    .replace(/<p class="doc-paragraph"><\/p>/g, '')
-    .replace(/<p class="doc-paragraph">\s*<\/p>/g, '');
+    .join('\n\n');
+
+  return html;
 }

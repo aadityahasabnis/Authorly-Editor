@@ -8,6 +8,7 @@ export interface NavItem {
 
 export interface NavSection {
   title: string;
+  href?: string; // Make sections clickable
   items: NavItem[];
 }
 
@@ -42,25 +43,31 @@ export const docsNav: NavSection[] = [
   },
   {
     title: 'Components',
+    href: '/docs/components', // Clickable section
     items: [
       { title: 'Editor', href: '/docs/components/editor' },
       { title: 'Renderer', href: '/docs/components/renderer' },
-      { title: 'Table of Contents', href: '/docs/components/toc' },
+      { title: 'Table of Contents', href: '/docs/components/table-of-contents' },
       { title: 'Toolbar', href: '/docs/components/toolbar' },
+      { title: 'Block Menu', href: '/docs/components/block-menu' },
+      { title: 'Theming', href: '/docs/components/theming' },
     ],
   },
   {
     title: 'Blocks',
+    href: '/docs/blocks', // Clickable section
     items: [
-      { title: 'Overview', href: '/docs/blocks' },
       { title: 'Paragraph', href: '/docs/blocks/paragraph' },
       { title: 'Headings', href: '/docs/blocks/headings' },
       { title: 'Lists', href: '/docs/blocks/lists' },
       { title: 'Code Block', href: '/docs/blocks/code' },
       { title: 'Blockquote', href: '/docs/blocks/quote' },
       { title: 'Image', href: '/docs/blocks/image' },
+      { title: 'Video', href: '/docs/blocks/video', badge: 'New' },
       { title: 'Table', href: '/docs/blocks/table' },
       { title: 'Callout', href: '/docs/blocks/callout' },
+      { title: 'Accordion', href: '/docs/blocks/accordion', badge: 'New' },
+      { title: 'Link Preview', href: '/docs/blocks/link-preview', badge: 'New' },
       { title: 'Divider', href: '/docs/blocks/divider' },
     ],
   },

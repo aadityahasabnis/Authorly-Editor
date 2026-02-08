@@ -1,4 +1,7 @@
-// Documentation content - static content for SSG
+import fs from 'fs';
+import path from 'path';
+
+// Documentation content - reading from markdown files
 export interface DocPage {
   slug: string;
   title: string;
@@ -6,7 +9,86 @@ export interface DocPage {
   content: string;
 }
 
-export const docsContent: Record<string, DocPage> = {
+// Cache for production builds
+const docsCache: Record<string, DocPage> = {};
+
+// Get the docs directory path
+const docsDirectory = path.join(process.cwd(), 'docs');
+
+// Extract title from markdown (first H1)
+function extractTitle(content: string): string {
+  const match = content.match(/^#\s+(.+)$/m);
+  return match ? match[1].trim() : 'Untitled';
+}
+
+// Extract description from markdown (first paragraph after H1)
+function extractDescription(content: string): string {
+  // Remove the first H1
+  const withoutTitle = content.replace(/^#\s+.+$/m, '').trim();
+  
+  // Get the first paragraph (text before first heading or empty line)
+  const lines = withoutTitle.split('\n');
+  const descriptionLines: string[] = [];
+  
+  for (const line of lines) {
+    const trimmed = line.trim();
+    // Stop at next heading or code block
+    if (trimmed.startsWith('#') || trimmed.startsWith('```')) break;
+    // Skip empty lines at start
+    if (descriptionLines.length === 0 && !trimmed) continue;
+    // Stop at first empty line after we have content
+    if (descriptionLines.length > 0 && !trimmed) break;
+    if (trimmed) descriptionLines.push(trimmed);
+  }
+  
+  return descriptionLines.join(' ').substring(0, 200);
+}
+
+// Read a markdown file and parse it
+function readMarkdownFile(slug: string): DocPage | null {
+  // Check cache first (only in production)
+  if (process.env.NODE_ENV === 'production' && docsCache[slug]) {
+    return docsCache[slug];
+  }
+  
+  // Determine file path
+  let filePath: string;
+  
+  if (slug === 'index' || slug === '') {
+    filePath = path.join(docsDirectory, 'index.md');
+  } else {
+    filePath = path.join(docsDirectory, `${slug}.md`);
+  }
+  
+  // Check if file exists
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+  
+  // Read file content
+  const content = fs.readFileSync(filePath, 'utf-8');
+  
+  // Parse title and description
+  const title = extractTitle(content);
+  const description = extractDescription(content);
+  
+  const doc: DocPage = {
+    slug,
+    title,
+    description,
+    content,
+  };
+  
+  // Cache in production
+  if (process.env.NODE_ENV === 'production') {
+    docsCache[slug] = doc;
+  }
+  
+  return doc;
+}
+
+// Hardcoded content for pages that don't have markdown files yet
+const fallbackContent: Record<string, DocPage> = {
   // ============================================
   // GETTING STARTED
   // ============================================
@@ -26,7 +108,7 @@ Unlike other rich text editors that output complex JSON structures or proprietar
 
 - **Pure HTML Output** — No proprietary formats, just clean semantic HTML
 - **Lightweight** — Only ~30kb gzipped, no heavy dependencies
-- **Block-Based** — Modern editing experience with 13+ block types
+- **Block-Based** — Modern editing experience with 14 block types
 - **TypeScript** — Full type support out of the box
 - **Customizable** — Easy to style and extend
 
@@ -338,6 +420,64 @@ function DocsPage({ content }) {
 **Important:** Make sure to enable enableHeadingIds on the Renderer for links to work.`,
   },
 
+  'components/table-of-contents': {
+    slug: 'components/table-of-contents',
+    title: 'Table of Contents',
+    description: 'Auto-generate navigation from your content headings.',
+    content: `# TableOfContents
+
+Automatically generate a table of contents from your HTML headings.
+
+## Import
+
+\`\`\`tsx
+import { TableOfContents } from 'authorly-editor';
+\`\`\`
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| html | string | '' | HTML to extract headings from |
+| darkMode | boolean | false | Enable dark theme |
+| title | string | 'Table of Contents' | Title text |
+| maxLevel | number | 6 | Maximum heading level (1-6) |
+
+## Basic Usage
+
+\`\`\`tsx
+<TableOfContents html={content} />
+\`\`\`
+
+## Documentation Layout
+
+\`\`\`tsx
+import { ContentBlocksRenderer, TableOfContents } from 'authorly-editor';
+
+function DocsPage({ content }) {
+  return (
+    <div className="flex gap-8">
+      <aside className="w-64 sticky top-4">
+        <TableOfContents 
+          html={content} 
+          title="On this page"
+          maxLevel={3}
+        />
+      </aside>
+      <main className="flex-1">
+        <ContentBlocksRenderer 
+          html={content}
+          enableHeadingIds={true}
+        />
+      </main>
+    </div>
+  );
+}
+\`\`\`
+
+**Important:** Make sure to enable enableHeadingIds on the Renderer for links to work.`,
+  },
+
   'components/toolbar': {
     slug: 'components/toolbar',
     title: 'Toolbar Component',
@@ -395,6 +535,246 @@ The toolbar is automatically included with the editor.
 \`\`\``,
   },
 
+  'components/block-menu': {
+    slug: 'components/block-menu',
+    title: 'Block Menu',
+    description: 'The slash command menu for inserting blocks.',
+    content: `# Block Menu
+
+The Block Menu is triggered by typing "/" in the editor and provides quick access to all block types.
+
+## Triggering the Menu
+
+Type \`/\` anywhere in the editor to open the block menu:
+
+\`\`\`
+/ (opens menu)
+/head (filters to headings)
+/code (filters to code block)
+\`\`\`
+
+## Available Commands
+
+### Text Blocks
+- \`/paragraph\` or \`/p\` - Default paragraph block
+- \`/heading1\` or \`/h1\` - Large heading
+- \`/heading2\` or \`/h2\` - Medium heading
+- \`/heading3\` or \`/h3\` - Small heading
+- \`/heading4\` or \`/h4\` - Extra small heading
+- \`/heading5\` or \`/h5\` - Tiny heading
+- \`/heading6\` or \`/h6\` - Smallest heading
+
+### Lists
+- \`/bullet\` or \`/ul\` - Bullet list
+- \`/numbered\` or \`/ol\` - Numbered list
+- \`/checklist\` or \`/todo\` - Task checklist
+
+### Content Blocks
+- \`/code\` - Code block with syntax highlighting
+- \`/quote\` - Blockquote
+- \`/callout\` - Highlighted callout box
+- \`/divider\` or \`/hr\` - Horizontal divider
+
+### Media Blocks
+- \`/image\` or \`/img\` - Image block
+- \`/video\` - Video embed
+- \`/table\` - Table block
+- \`/accordion\` - Expandable accordion
+- \`/link\` - Link preview card
+
+## Keyboard Navigation
+
+- **↑/↓** - Navigate menu items
+- **Enter** - Insert selected block
+- **Esc** - Close menu
+- **Type** - Filter menu items
+
+## Customizing the Placeholder
+
+Change the placeholder text that hints at the slash command:
+
+\`\`\`tsx
+<ContentBlocksEditor
+  placeholder="Type '/' for commands or start writing..."
+/>
+\`\`\`
+
+## Menu Behavior
+
+The block menu:
+- Opens automatically when you type \`/\`
+- Filters as you continue typing
+- Closes when you press Escape or click outside
+- Inserts the block and focuses it when you select an item`,
+  },
+
+  'components/theming': {
+    slug: 'components/theming',
+    title: 'Theming & Customization',
+    description: 'Customize the appearance of the editor and renderer.',
+    content: `# Theming & Customization
+
+Authorly provides multiple ways to customize the appearance of the editor and renderer.
+
+## Dark Mode
+
+Both the Editor and Renderer support dark mode out of the box:
+
+\`\`\`tsx
+<ContentBlocksEditor darkMode={true} />
+<ContentBlocksRenderer darkMode={true} />
+\`\`\`
+
+## CSS Variables
+
+Authorly uses CSS custom properties for theming. Override these in your global CSS:
+
+\`\`\`css
+:root {
+  /* Primary colors */
+  --authorly-primary: #3b82f6;
+  --authorly-primary-hover: #2563eb;
+  
+  /* Background colors */
+  --authorly-bg: #ffffff;
+  --authorly-bg-secondary: #f9fafb;
+  
+  /* Text colors */
+  --authorly-text: #1f2937;
+  --authorly-text-secondary: #6b7280;
+  
+  /* Border colors */
+  --authorly-border: #e5e7eb;
+  
+  /* Code block colors */
+  --authorly-code-bg: #1e293b;
+  --authorly-code-text: #e2e8f0;
+}
+
+/* Dark mode overrides */
+[data-theme="dark"] {
+  --authorly-bg: #111827;
+  --authorly-bg-secondary: #1f2937;
+  --authorly-text: #f9fafb;
+  --authorly-text-secondary: #d1d5db;
+  --authorly-border: #374151;
+}
+\`\`\`
+
+## Custom Classes
+
+Add custom classes to the editor wrapper:
+
+\`\`\`tsx
+<ContentBlocksEditor
+  className="my-custom-editor border-2 border-purple-500"
+/>
+\`\`\`
+
+## Styling Specific Blocks
+
+Target specific block types with CSS:
+
+\`\`\`css
+/* Style all paragraphs */
+.authorly-editor p {
+  font-size: 1.125rem;
+  line-height: 1.8;
+}
+
+/* Style headings */
+.authorly-editor h1 {
+  color: #1e40af;
+  font-weight: 800;
+}
+
+/* Style code blocks */
+.authorly-editor pre {
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+/* Style callouts */
+.authorly-editor .callout {
+  border-left-width: 4px;
+  border-color: #3b82f6;
+}
+\`\`\`
+
+## Font Customization
+
+Override the default fonts:
+
+\`\`\`css
+.authorly-editor,
+.authorly-renderer {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.authorly-editor code,
+.authorly-renderer code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+\`\`\`
+
+## Theme Presets
+
+Create reusable theme configurations:
+
+\`\`\`tsx
+// themes.ts
+export const themes = {
+  minimal: {
+    darkMode: false,
+    className: 'font-serif text-lg leading-relaxed',
+  },
+  technical: {
+    darkMode: true,
+    className: 'font-mono text-sm',
+  },
+  blog: {
+    darkMode: false,
+    className: 'max-w-2xl mx-auto text-gray-800',
+  },
+};
+
+// Usage
+<ContentBlocksEditor {...themes.blog} />
+\`\`\`
+
+## Tailwind Integration
+
+Authorly works seamlessly with Tailwind CSS:
+
+\`\`\`tsx
+<ContentBlocksEditor
+  className="prose prose-lg max-w-none dark:prose-invert"
+/>
+\`\`\`
+
+## Advanced: Custom Block Styling
+
+For completely custom block appearances, you can wrap the editor and use CSS to target specific data attributes:
+
+\`\`\`css
+/* Custom callout colors */
+.authorly-editor [data-callout-type="info"] {
+  background: #dbeafe;
+  border-color: #3b82f6;
+}
+
+.authorly-editor [data-callout-type="warning"] {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.authorly-editor [data-callout-type="error"] {
+  background: #fee2e2;
+  border-color: #ef4444;
+}
+\`\`\``,
+  },
+
   // ============================================
   // BLOCKS
   // ============================================
@@ -404,7 +784,7 @@ The toolbar is automatically included with the editor.
     description: 'Overview of all available block types in Authorly.',
     content: `# Blocks Overview
 
-Authorly supports 13+ block types for rich content creation.
+Authorly supports 14 block types for rich content creation.
 
 ## Text Blocks
 
@@ -421,20 +801,29 @@ Three list types: bullet lists, numbered lists, and interactive checklists.
 
 ## Content Blocks
 
-### [Code Block](/docs/blocks/code-block)
+### [Code Block](/docs/blocks/code)
 Syntax-highlighted code with language detection and copy functionality.
 
-### [Blockquote](/docs/blocks/blockquote)
+### [Blockquote](/docs/blocks/quote)
 Beautiful quotes with optional attribution and styling.
 
 ### [Image](/docs/blocks/image)
 Responsive images with captions, alt text, and size controls.
+
+### [Video](/docs/blocks/video)
+Embed videos from YouTube, Vimeo, or direct URLs.
 
 ### [Table](/docs/blocks/table)
 Interactive tables with add/remove rows and columns.
 
 ### [Callout](/docs/blocks/callout)
 Highlighted content blocks with icons and custom colors.
+
+### [Accordion](/docs/blocks/accordion)
+Collapsible sections using native HTML details/summary elements.
+
+### [Link Preview](/docs/blocks/link-preview)
+Rich URL previews with Open Graph metadata.
 
 ### [Divider](/docs/blocks/divider)
 Visual separators between content sections.
@@ -456,372 +845,109 @@ Visual separators between content sections.
 | - | Bullet list |
 | 1. | Numbered list |
 | > | Blockquote |
+| \`\`\` | Code block |
 | --- | Divider |`,
   },
 
-  'blocks/paragraph': {
-    slug: 'blocks/paragraph',
-    title: 'Paragraph Block',
-    description: 'The fundamental text block for writing content.',
-    content: `# Paragraph Block
+  'blocks/accordion': {
+    slug: 'blocks/accordion',
+    title: 'Accordion Block',
+    description: 'Create collapsible sections for FAQ or long content.',
+    content: `# Accordion Block
 
-The paragraph block is the foundation of content in Authorly.
+Create collapsible content sections using HTML details/summary elements.
 
 ## Features
 
-### Inline Formatting
-- **Bold** (Ctrl/Cmd + B)
-- *Italic* (Ctrl/Cmd + I)
-- Underline (Ctrl/Cmd + U)
-- Strikethrough (Ctrl/Cmd + Shift + S)
-- Inline code (Ctrl/Cmd + Shift + X)
-- Links (Ctrl/Cmd + K)
+### Native Behavior
+- Uses HTML \`<details>\` and \`<summary>\` elements
+- Works without JavaScript
+- Accessible by default
+- Keyboard navigable
 
-### Line Breaks
-- **Hard break** — Shift + Enter
-- **New paragraph** — Enter
+### Rich Content
+- Full formatting in content area
+- Nested blocks supported
+- Multiple accordions in sequence
 
-## Keyboard Shortcuts
+## Creating Accordions
 
-| Shortcut | Action |
-|----------|--------|
-| Enter | New paragraph |
-| Shift + Enter | Line break |
-| Ctrl/Cmd + A | Select all text |
-| Backspace | Delete empty paragraph |
+### Block Menu
+1. Type /accordion or / then select "Accordion"
+2. Enter the summary/title text
+3. Add content inside the accordion
 
-## HTML Output
+## Use Cases
+
+### FAQs
+Perfect for frequently asked questions sections.
 
 \`\`\`html
-<p>This is a paragraph with <strong>bold</strong> and <em>italic</em> text.</p>
-\`\`\``,
-  },
+<details>
+  <summary>What is Authorly?</summary>
+  <p>Authorly is a lightweight, block-based rich text editor for React that outputs clean HTML.</p>
+</details>
+\`\`\`
 
-  'blocks/headings': {
-    slug: 'blocks/headings',
-    title: 'Heading Blocks',
-    description: 'Structure your content with six heading levels.',
-    content: `# Heading Blocks
+### Long Content
+Hide lengthy explanations that not everyone needs to read.
 
-Headings provide structure and hierarchy to your content.
-
-## Features
-
-### Six Levels
-- **H1** — Main title (Ctrl/Cmd + 1)
-- **H2** — Major sections (Ctrl/Cmd + 2)
-- **H3** — Subsections (Ctrl/Cmd + 3)
-- **H4-H6** — Minor headings
-
-### Auto-Generated IDs
-When using the Renderer with enableHeadingIds={true}, headings automatically get IDs for linking.
-
-## Creating Headings
-
-### Markdown Style
-| Input | Result |
-|-------|--------|
-| # | H1 |
-| ## | H2 |
-| ### | H3 |
-| #### | H4 |
-
-### Block Menu
-1. Type / to open block menu
-2. Type "heading" or "h1", "h2", etc.
-3. Select desired level
+### Step-by-step Instructions
+Show step titles with expandable details.
 
 ## Best Practices
 
-- Use **H1** for main page title (once per page)
-- Use **H2** for major sections
-- Use **H3** for subsections
-- Avoid skipping levels`,
+- Keep summary text concise and descriptive
+- Use for genuinely optional content
+- Don't hide critical information in accordions
+- Consider SEO implications`,
   },
 
-  'blocks/lists': {
-    slug: 'blocks/lists',
-    title: 'List Blocks',
-    description: 'Create bullet lists, numbered lists, and interactive checklists.',
-    content: `# List Blocks
+  'blocks/link-preview': {
+    slug: 'blocks/link-preview',
+    title: 'Link Preview Block',
+    description: 'Rich URL previews with Open Graph metadata.',
+    content: `# Link Preview Block
 
-Authorly supports three types of lists.
-
-## List Types
-
-### Bullet Lists
-Unordered lists for general items.
-
-### Numbered Lists
-Ordered lists for sequences.
-
-### Checklists
-Interactive task lists with checkboxes.
-
-## Creating Lists
-
-### Markdown Style
-| Input | Result |
-|-------|--------|
-| - or * | Bullet list |
-| 1. | Numbered list |
-| [ ] | Checklist (unchecked) |
-| [x] | Checklist (checked) |
-
-### Keyboard Shortcuts
-| Shortcut | Action |
-|----------|--------|
-| Enter | New list item |
-| Tab | Indent item |
-| Shift + Tab | Outdent item |
-| Backspace | Exit list (if empty) |
-
-## Nested Lists
-
-All list types support nesting. Use Tab and Shift + Tab to control nesting levels.`,
-  },
-
-  'blocks/code-block': {
-    slug: 'blocks/code-block',
-    title: 'Code Block',
-    description: 'Display syntax-highlighted code with language support.',
-    content: `# Code Block
-
-Display formatted code with syntax highlighting and language detection.
+Create rich link previews that display Open Graph metadata from URLs.
 
 ## Features
 
-### Syntax Highlighting
-- 100+ programming languages supported
-- Automatic language detection
-- Custom themes (light/dark mode)
+### Automatic Metadata
+- Fetches page title
+- Gets description
+- Loads preview image
+- Shows site favicon
 
-### Copy Functionality
-- One-click copy button
-- Preserves formatting and indentation
-- Works in both editor and renderer
-
-## Creating Code Blocks
-
-### Markdown Style
-Type three backticks at the start of a line.
-
-### Block Menu
-1. Type /code or / then select "Code Block"
-2. Choose language (optional)
-3. Paste or type your code
-
-## Supported Languages
-
-- JavaScript/TypeScript
-- Python
-- Java, C/C++, C#
-- Go, Rust, PHP, Ruby
-- HTML, CSS, JSON, SQL
-- YAML, Bash/Shell`,
-  },
-
-  'blocks/blockquote': {
-    slug: 'blocks/blockquote',
-    title: 'Blockquote Block',
-    description: 'Beautiful quotes with optional attribution and styling.',
-    content: `# Blockquote Block
-
-Create beautiful quotes and citations.
-
-## Features
-
-### Rich Formatting
-- Supports inline formatting (bold, italic, links)
-- Multi-paragraph quotes
-- Attribution support
-- Elegant styling
-
-### Easy Creation
-- Markdown-style shortcut (>)
-- Block menu selection
-- Convert from paragraphs
-
-## Creating Blockquotes
-
-### Markdown Style
-Type > at the beginning of a line.
-
-### Block Menu
-1. Type / to open menu
-2. Select "Blockquote" or type "quote"
-3. Start typing your quote
-
-## Best Practices
-
-- Use for actual quotes, citations, or highlighted text
-- Keep quotes concise and impactful
-- Always provide attribution when possible`,
-  },
-
-  'blocks/image': {
-    slug: 'blocks/image',
-    title: 'Image Block',
-    description: 'Responsive images with captions, alt text, and size controls.',
-    content: `# Image Block
-
-Add responsive images with captions, alt text, and flexible sizing options.
-
-## Features
-
-### Image Management
-- Drag & drop upload
-- URL input support
-- Automatic optimization
-- Responsive sizing
-
-### Accessibility
-- Alt text support
-- Caption functionality
-- Screen reader compatibility
-
-### Customization
-- Size controls (small, medium, large, full)
-- Alignment options (left, center, right)
-- Caption styling
-- Link support
-
-## Adding Images
-
-### Upload Methods
-1. **Drag & Drop** — Drag image files directly into editor
-2. **File Selection** — Click to browse and select files
-3. **URL Input** — Paste image URLs directly
-4. **Copy & Paste** — Paste images from clipboard
-
-## Best Practices
-
-- Always include meaningful alt text
-- Use captions for additional context
-- Compress images before upload
-- Choose correct format (JPEG for photos, PNG for graphics)`,
-  },
-
-  'blocks/table': {
-    slug: 'blocks/table',
-    title: 'Table Block',
-    description: 'Interactive tables with add/remove rows and columns.',
-    content: `# Table Block
-
-Create and edit interactive tables.
-
-## Features
-
-### Interactive Editing
-- Add/remove rows and columns
-- Resize columns by dragging
-- Cell-by-cell editing
-- Header row support
-
-### Navigation
-- Tab to move between cells
-- Arrow keys for navigation
-- Enter to create new rows
-
-## Creating Tables
-
-### Block Menu
-1. Type /table or / then select "Table"
-2. Choose initial table size
-3. Start editing cells
-
-### Keyboard Shortcuts
-| Shortcut | Action |
-|----------|--------|
-| Tab | Next cell |
-| Shift + Tab | Previous cell |
-| Arrow keys | Navigate cells |
-
-## Best Practices
-
-- Keep table data concise and scannable
-- Use headers to describe column content
-- Always include header rows for accessibility`,
-  },
-
-  'blocks/callout': {
-    slug: 'blocks/callout',
-    title: 'Callout Block',
-    description: 'Highlighted content blocks with icons and custom colors.',
-    content: `# Callout Block
-
-Create highlighted content blocks for important information.
-
-## Features
-
-### Visual Styling
-- Multiple color themes (info, warning, success, error)
-- Custom icons for each type
-- Elegant borders and backgrounds
-- Dark mode support
-
-### Content Types
-- **Info** — General information and tips
-- **Warning** — Important warnings and cautions
-- **Success** — Positive messages and confirmations
-- **Error** — Error messages and critical alerts
-
-## Creating Callouts
-
-### Block Menu
-1. Type /callout or / then select "Callout"
-2. Choose callout type (info, warning, success, error)
-3. Start typing your content
-
-## Best Practices
-
-- Highlight important information
-- Use appropriate callout types for context
-- Don't overuse callouts (max 2-3 per page)
-- Make the content actionable when possible`,
-  },
-
-  'blocks/divider': {
-    slug: 'blocks/divider',
-    title: 'Divider Block',
-    description: 'Visual separators between content sections.',
-    content: `# Divider Block
-
-Add visual separation between content sections.
-
-## Features
-
-### Visual Separation
-- Clean horizontal lines
-- Multiple style options
+### Clean Presentation
+- Card-style display
+- Clickable link
 - Responsive design
-- Theme integration
 
-### Easy Creation
-- Markdown shortcut (---)
-- Block menu selection
-- Automatic spacing
+## Creating Link Previews
 
-## Creating Dividers
-
-### Markdown Style
-Type three dashes at the beginning of a line: ---
+### Paste URL
+Paste any URL and the editor will offer to create a link preview.
 
 ### Block Menu
-1. Type /divider or / then select "Divider"
-2. Divider is inserted immediately
+1. Type /link or / then select "Link Preview"
+2. Enter the URL
+3. Preview card is generated
+
+## Metadata Sources
+
+The block fetches Open Graph metadata:
+- \`og:title\` — Page title
+- \`og:description\` — Page description  
+- \`og:image\` — Preview image
+- \`og:site_name\` — Site name
 
 ## Best Practices
 
-### When to Use Dividers
-- Between major content sections
-- To separate different topics
-- When transitioning between ideas
-
-### When Not to Use
-- Between every paragraph
-- In place of proper headings
-- In short content pieces`,
+- Use for sharing external resources
+- Preview important links in articles
+- Good for documentation and tutorials
+- Consider fallback text if metadata isn't available`,
   },
 
   // ============================================
@@ -1700,12 +1826,60 @@ Have a feature request? Open an issue on GitHub!
   },
 };
 
+// Helper to get all markdown files from docs directory
+function getAllMarkdownSlugs(): string[] {
+  const slugs: string[] = [];
+  
+  function scanDirectory(dir: string, baseSlug: string = '') {
+    if (!fs.existsSync(dir)) return;
+    
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        // Recursively scan subdirectories
+        scanDirectory(
+          path.join(dir, entry.name),
+          baseSlug ? `${baseSlug}/${entry.name}` : entry.name
+        );
+      } else if (entry.isFile() && entry.name.endsWith('.md')) {
+        // Add markdown file slug
+        const filename = entry.name.replace(/\.md$/, '');
+        if (filename === 'index') {
+          slugs.push(baseSlug || 'index');
+        } else {
+          slugs.push(baseSlug ? `${baseSlug}/${filename}` : filename);
+        }
+      }
+    }
+  }
+  
+  scanDirectory(docsDirectory);
+  return slugs;
+}
+
 // Helper to get all doc slugs for SSG
 export function getAllDocSlugs(): string[] {
-  return Object.keys(docsContent);
+  // Get markdown file slugs
+  const markdownSlugs = getAllMarkdownSlugs();
+  
+  // Get fallback content slugs
+  const fallbackSlugs = Object.keys(fallbackContent);
+  
+  // Combine and deduplicate
+  const allSlugs = [...new Set([...markdownSlugs, ...fallbackSlugs])];
+  
+  return allSlugs;
 }
 
 // Helper to get doc by slug
 export function getDocBySlug(slug: string): DocPage | null {
-  return docsContent[slug] || null;
+  // Try to read from markdown file first
+  const markdownDoc = readMarkdownFile(slug);
+  if (markdownDoc) {
+    return markdownDoc;
+  }
+  
+  // Fallback to hardcoded content
+  return fallbackContent[slug] || null;
 }

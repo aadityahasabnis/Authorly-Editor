@@ -101,7 +101,7 @@ export default function NotFound() {
           <p className="text-sm text-muted-foreground mb-4">Popular pages</p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             {[
-              { href: '/docs/getting-started', label: 'Getting Started' },
+              { href: '/docs', label: 'Getting Started' },
               { href: '/docs/installation', label: 'Installation' },
               { href: '/examples', label: 'Examples' },
               { href: '/docs/api/editor-props', label: 'API Reference' },

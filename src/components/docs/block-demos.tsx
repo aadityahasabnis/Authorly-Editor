@@ -506,3 +506,97 @@ export function DividerDemo() {
     />
   );
 }
+
+export function VideoDemo() {
+  return (
+    <BlockDemo
+      title="Video Block"
+      description="Embed videos from YouTube, Vimeo, or direct URLs."
+      blockType="video"
+      initialContent={`<figure data-video="true">
+  <div class="cb-video-wrapper">
+    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+  </div>
+  <figcaption>Example YouTube video embed</figcaption>
+</figure>`}
+      features={['YouTube', 'Vimeo', 'Direct URLs', 'Captions', 'Responsive']}
+      icon={<span className="text-white">▶</span>}
+      gradient="from-red-500 to-pink-500"
+      tips={[
+        'Paste any YouTube or Vimeo URL to embed',
+        'Videos are responsive and maintain aspect ratio',
+        'Add captions to provide context'
+      ]}
+      shortcuts={[
+        '/video - Insert video',
+        'Paste URL - Auto-embed',
+        'Delete - Remove video'
+      ]}
+    />
+  );
+}
+
+export function AccordionDemo() {
+  return (
+    <BlockDemo
+      title="Accordion Block"
+      description="Create collapsible sections for FAQs and organized content."
+      blockType="accordion"
+      initialContent={`<details>
+  <summary>What is Authorly?</summary>
+  <p>Authorly is a lightweight, block-based rich text editor for React that outputs clean, semantic HTML.</p>
+</details>
+<details>
+  <summary>How do I install it?</summary>
+  <p>Simply run <code>npm install authorly-editor</code> and import the components you need.</p>
+</details>
+<details open>
+  <summary>Is it free to use?</summary>
+  <p>Yes! Authorly is open source and free for both personal and commercial projects.</p>
+</details>`}
+      features={['Collapsible', 'FAQs', 'Nested Content', 'Default Open']}
+      icon={<span className="text-white">+</span>}
+      gradient="from-indigo-500 to-blue-500"
+      tips={[
+        'Great for FAQs and documentation',
+        'Supports nested content inside each section',
+        'Can set sections to open by default'
+      ]}
+      shortcuts={[
+        '/accordion - Insert accordion',
+        '/faq - Insert accordion',
+        'Click header - Toggle section'
+      ]}
+    />
+  );
+}
+
+export function LinkPreviewDemo() {
+  return (
+    <BlockDemo
+      title="Link Preview Block"
+      description="Create rich previews for URLs with Open Graph metadata."
+      blockType="linkPreview"
+      initialContent={`<div class="cb-link-preview" data-url="https://github.com/aadityahasabnis/authorly">
+  <div class="cb-link-preview-content">
+    <div class="cb-link-preview-title">Authorly - Block-Based Rich Text Editor</div>
+    <div class="cb-link-preview-description">A lightweight, block-based rich text editor for React that outputs clean, semantic HTML.</div>
+    <div class="cb-link-preview-url">github.com</div>
+  </div>
+</div>`}
+      features={['Open Graph', 'Auto-Fetch', 'Rich Cards', 'Fallback']}
+      icon={<span className="text-white">🔗</span>}
+      gradient="from-emerald-500 to-teal-500"
+      tips={[
+        'Paste any URL to generate a preview',
+        'Fetches Open Graph metadata automatically',
+        'Falls back to basic link if metadata unavailable'
+      ]}
+      shortcuts={[
+        '/link - Insert link preview',
+        'Paste URL - Auto-preview',
+        'Click - Open link'
+      ]}
+    />
+  );
+}

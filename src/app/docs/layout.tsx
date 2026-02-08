@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Menu, X, Moon, Sun, Github, Search, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -132,47 +133,75 @@ export default function DocsLayout({
         {/* Left Sidebar - Sticky */}
         <aside
           className={cn(
-            'fixed lg:sticky top-16 z-40 h-[calc(100vh-4rem)] w-64 xl:w-72 shrink-0 border-r bg-background transition-transform duration-300 lg:translate-x-0',
+            'fixed lg:sticky top-16 z-40 h-[calc(100vh-4rem)] w-72 xl:w-80 shrink-0 border-r border-border/50 bg-background/95 backdrop-blur-sm transition-transform duration-300 lg:translate-x-0',
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >
-          <div className="h-full overflow-y-auto py-6 px-3">
+          <div className="h-full overflow-y-auto py-8 px-4">
             {/* Mobile Search */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex md:hidden items-center gap-2 w-full h-9 px-3 mb-6 text-sm text-muted-foreground bg-muted/50 border rounded-lg"
+              className="flex md:hidden items-center gap-2 w-full h-10 px-4 mb-6 text-sm text-muted-foreground bg-muted/50 border border-border/50 rounded-xl"
             >
               <Search className="w-4 h-4" />
               <span>Search...</span>
             </button>
 
             {/* Navigation */}
-            <nav className="space-y-6">
+            <nav className="space-y-8">
               {docsNav.map((section) => (
                 <div key={section.title}>
-                  <h4 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    {section.title}
-                  </h4>
-                  <ul className="space-y-0.5">
+                  {section.href ? (
+                    <Link href={section.href}>
+                      <h4 className="mb-3 px-3 text-xs font-bold uppercase tracking-widest text-muted-foreground/70 hover:text-primary transition-colors cursor-pointer">
+                        {section.title}
+                      </h4>
+                    </Link>
+                  ) : (
+                    <h4 className="mb-3 px-3 text-xs font-bold uppercase tracking-widest text-muted-foreground/70">
+                      {section.title}
+                    </h4>
+                  )}
+                  <ul className="space-y-1">
                     {section.items.map((item) => {
                       const isActive = pathname === item.href;
                       return (
-                        <li key={item.href}>
+                        <motion.li 
+                          key={item.href} 
+                          className="relative"
+                          initial={false}
+                        >
                           <Link
                             href={item.href}
                             className={cn(
-                              'flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all duration-200',
+                              'flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl transition-all duration-200 relative group',
                               isActive
-                                ? 'bg-primary/10 text-primary font-medium'
-                                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                                ? 'bg-primary/10 text-primary font-medium shadow-sm'
+                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                             )}
                           >
-                            {isActive && (
-                              <div className="w-1 h-4 rounded-full bg-primary" />
+                            {/* Animated dot - always visible on active, appears on hover */}
+                            <motion.div
+                              initial={false}
+                              animate={{
+                                opacity: isActive ? 1 : 0,
+                                scale: isActive ? 1 : 0.8,
+                              }}
+                              whileHover={{ opacity: 1, scale: 1 }}
+                              transition={{ 
+                                duration: 0.15,
+                                ease: [0.23, 1, 0.32, 1]
+                              }}
+                              className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"
+                            />
+                            <span>{item.title}</span>
+                            {item.badge && (
+                              <span className="ml-auto px-1.5 py-0.5 text-[10px] font-bold uppercase rounded bg-primary/20 text-primary">
+                                {item.badge}
+                              </span>
                             )}
-                            {item.title}
                           </Link>
-                        </li>
+                        </motion.li>
                       );
                     })}
                   </ul>
@@ -181,22 +210,22 @@ export default function DocsLayout({
             </nav>
 
             {/* Sidebar Footer */}
-            <div className="mt-8 pt-6 border-t">
-              <div className="px-3 py-3 rounded-lg bg-gradient-to-br from-primary/5 to-purple-500/5 border border-primary/10">
-                <p className="text-xs font-medium text-foreground mb-1">
-                  Star us on GitHub
+            <div className="mt-10 pt-8 border-t border-border/50">
+              <div className="px-4 py-4 rounded-xl bg-gradient-to-br from-primary/5 via-purple-500/5 to-pink-500/5 border border-primary/10">
+                <p className="text-sm font-semibold text-foreground mb-1.5">
+                  Love Authorly?
                 </p>
-                <p className="text-xs text-muted-foreground mb-2">
-                  If you like Authorly, give us a star!
+                <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+                  Star us on GitHub to show your support!
                 </p>
                 <a
                   href={siteConfig.links.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                  className="inline-flex items-center gap-2 text-xs font-medium text-primary hover:underline"
                 >
-                  <Github className="w-3 h-3" />
-                  View on GitHub
+                  <Github className="w-4 h-4" />
+                  Star on GitHub
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
@@ -214,7 +243,17 @@ export default function DocsLayout({
 
         {/* Main content area - this will contain the doc content + right TOC */}
         <div className="flex-1 min-w-0">
-          {children}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
