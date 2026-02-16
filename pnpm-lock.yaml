@@ -12,8 +12,8 @@ importers:
         specifier: ^0.18.0
         version: 0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       authorly-editor:
-        specifier: ^0.1.11
-        version: 0.1.11(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(lucide-react@0.564.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: ^0.1.15
+        version: 0.1.15(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(lucide-react@0.564.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1145,8 +1145,8 @@ packages:
     resolution: {integrity: sha512-hsU18Ae8CDTR6Kgu9DYf0EbCr/a5iGL0rytQDobUcdpYOKokk8LEjVphnXkDkgpi0wYVsqrXuP0bZxJaTqdgoA==}
     engines: {node: '>= 0.4'}
 
-  authorly-editor@0.1.11:
-    resolution: {integrity: sha512-/IoMagI8QClBLqbdeczQKhfxCMFWjAQ+R38N4aa155bAFi7/0CdNJGJcz2nlInvxVZEywOoSh03/eglmuMgmCg==}
+  authorly-editor@0.1.15:
+    resolution: {integrity: sha512-O5LfS+iY115ZJpui/8QtpawpDsJYLN//3I4KqwBz+sSNCYDflnoHVY7ZfrDoyBU5KkZKNLRkN/QV3m4JFHsObQ==}
     peerDependencies:
       '@excalidraw/excalidraw': ^0.18.0
       lucide-react: ^0.460.0
@@ -3955,7 +3955,7 @@ snapshots:
 
   async-function@1.0.0: {}
 
-  authorly-editor@0.1.11(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(lucide-react@0.564.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  authorly-editor@0.1.15(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(lucide-react@0.564.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       '@excalidraw/excalidraw': 0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       lucide-react: 0.564.0(react@19.2.4)
