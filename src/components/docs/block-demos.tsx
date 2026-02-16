@@ -6,7 +6,7 @@ import { Copy, Check, Eye, Code2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import dynamic from 'next/dynamic';
-import type { EditorRef } from '@/components/Editor';
+import type { EditorRef } from 'authorly-editor';
 
 // Dynamic import to avoid SSR issues
 const Editor = dynamic(() => import('@/components/Editor'), { ssr: false });

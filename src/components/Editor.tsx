@@ -1,6 +1,8 @@
 'use client';
 
+import { forwardRef } from 'react';
 import dynamic from 'next/dynamic';
+import type { EditorRef, UploadConfig, UploadResult, UploadProgress } from 'authorly-editor';
 
 // Dynamically import the editor to avoid SSR issues
 const AuthorlyEditor = dynamic(
@@ -25,8 +27,17 @@ interface EditorProps {
   readOnly?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  imageUploadConfig?: UploadConfig;
+  onUploadStart?: (filename: string) => void;
+  onUploadProgress?: (progress: UploadProgress) => void;
+  onUploadSuccess?: (result: UploadResult) => void;
+  onUploadError?: (error: Error) => void;
 }
 
-export default function Editor(props: EditorProps) {
-  return <AuthorlyEditor {...props} />;
-}
+const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
+  return <AuthorlyEditor ref={ref} {...props} />;
+});
+
+Editor.displayName = 'Editor';
+
+export default Editor;

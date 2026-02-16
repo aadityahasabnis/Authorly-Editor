@@ -17,7 +17,7 @@ import Link from 'next/link';
 import Editor from '@/components/Editor';
 import Renderer from '@/components/Renderer';
 import TableOfContents from '@/components/TableOfContents';
-import type { EditorRef, UploadConfig, UploadResult } from '@/components/Editor';
+import type { EditorRef, UploadConfig, UploadResult } from 'authorly-editor';
 
 // Professional sample content showcasing all features
 const sampleContent = `<h1>Building Better Products</h1>
