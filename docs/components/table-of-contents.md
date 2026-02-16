@@ -1,6 +1,6 @@
-# TableOfContents
+# AuthorlyTOC
 
-The `TableOfContents` component automatically extracts headings from HTML content and renders them as a hierarchical navigation menu. It's perfect for documentation sites, blog posts, and long-form content.
+The `AuthorlyTOC` component automatically extracts headings from HTML content and renders them as a hierarchical navigation menu. It's perfect for documentation sites, blog posts, and long-form content.
 
 ## Features
 
@@ -16,7 +16,7 @@ The `TableOfContents` component automatically extracts headings from HTML conten
 ## Import
 
 ```tsx
-import { TableOfContents } from 'authorly-editor';
+import { AuthorlyTOC } from 'authorly-editor';
 ```
 
 ## Props
@@ -39,20 +39,20 @@ import { TableOfContents } from 'authorly-editor';
 ## Basic Usage
 
 ```tsx
-import { ContentBlocksRenderer, TableOfContents } from 'authorly-editor';
+import { AuthorlyRenderer, AuthorlyTOC } from 'authorly-editor';
 
 function BlogPost({ htmlContent }: { htmlContent: string }) {
   return (
     <div className="blog-layout">
       <aside className="sidebar">
-        <TableOfContents 
+        <AuthorlyTOC 
           html={htmlContent}
           title="Contents"
         />
       </aside>
       
       <main>
-        <ContentBlocksRenderer html={htmlContent} />
+        <AuthorlyRenderer html={htmlContent} />
       </main>
     </div>
   );
@@ -65,7 +65,7 @@ Limit which heading levels appear in the TOC:
 
 ```tsx
 // Only show H2 and H3 headings
-<TableOfContents 
+<AuthorlyTOC 
   html={content}
   minLevel={2}
   maxLevel={3}
@@ -80,7 +80,7 @@ This is useful when you have a single H1 title and want the TOC to show only sub
 Make the TOC collapsible to save space:
 
 ```tsx
-<TableOfContents 
+<AuthorlyTOC 
   html={content}
   collapsible={true}
   defaultCollapsed={false}
@@ -111,7 +111,7 @@ function DocPage({ content }: { content: string }) {
   };
 
   return (
-    <TableOfContents 
+    <AuthorlyTOC 
       html={content}
       onNavigate={handleNavigate}
     />
@@ -124,7 +124,7 @@ function DocPage({ content }: { content: string }) {
 Specify a container to search for headings (useful for scoped content):
 
 ```tsx
-<TableOfContents 
+<AuthorlyTOC 
   html={content}
   targetContainer="#article-content"
   // or pass an element directly:
@@ -146,7 +146,7 @@ function DarkModeExample({ content }: { content: string }) {
         Toggle Dark Mode
       </button>
       
-      <TableOfContents 
+      <AuthorlyTOC 
         html={content}
         darkMode={isDark}
       />
@@ -161,7 +161,7 @@ Use alongside the editor to show a live TOC:
 
 ```tsx
 import { useRef, useState } from 'react';
-import { ContentBlocksEditor, TableOfContents, EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, AuthorlyTOC, EditorRef } from 'authorly-editor';
 
 function EditorWithTOC() {
   const editorRef = useRef<EditorRef>(null);
@@ -177,7 +177,7 @@ function EditorWithTOC() {
   return (
     <div className="editor-layout">
       <aside className="toc-sidebar">
-        <TableOfContents 
+        <AuthorlyTOC 
           html={html}
           title="Document Outline"
           minLevel={1}
@@ -186,7 +186,7 @@ function EditorWithTOC() {
       </aside>
       
       <main>
-        <ContentBlocksEditor 
+        <AuthorlyEditor 
           ref={editorRef}
           onChange={handleUpdate}
           placeholder="Start writing..."
@@ -238,7 +238,7 @@ console.log(tocItems);
 
 ## Styling
 
-The TableOfContents includes all necessary styles by default. However, you can customize with CSS:
+The AuthorlyTOC includes all necessary styles by default. However, you can customize with CSS:
 
 ```css
 /* Override TOC title color */
@@ -269,7 +269,7 @@ The TableOfContents includes all necessary styles by default. However, you can c
   maxHeight: 'calc(100vh - 40px)',
   overflowY: 'auto' 
 }}>
-  <TableOfContents 
+  <AuthorlyTOC 
     html={content}
     title="On This Page"
   />
@@ -290,7 +290,7 @@ function ResponsiveTOC({ content }: { content: string }) {
   }, []);
 
   return (
-    <TableOfContents 
+    <AuthorlyTOC 
       html={content}
       collapsible={isMobile}
       defaultCollapsed={isMobile}
@@ -326,7 +326,7 @@ function TOCWithActiveHeading({ content }: { content: string }) {
   }, []);
 
   return (
-    <TableOfContents 
+    <AuthorlyTOC 
       html={content}
       className="toc-with-active"
       style={{ '--active-id': activeId } as React.CSSProperties}
@@ -358,6 +358,6 @@ function TOCWithActiveHeading({ content }: { content: string }) {
 
 ## See Also
 
-- [ContentBlocksRenderer](/docs/components/renderer) - Automatically adds IDs to headings
-- [ContentBlocksEditor](/docs/components/editor) - Generate content with headings
+- [AuthorlyRenderer](/docs/components/renderer) - Automatically adds IDs to headings
+- [AuthorlyEditor](/docs/components/editor) - Generate content with headings
 - [Quick Start Guide](/docs/quick-start) - Complete setup example

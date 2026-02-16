@@ -1,83 +1,114 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import {
   Copy,
   Check,
-  Trash2,
-  Code2,
-  Eye,
-  Split,
   Download,
-  Sparkles,
-  FileCode,
-  Type,
-  Keyboard,
-  Info,
-  X,
-  Upload,
+  Settings,
+  HelpCircle,
+  Moon,
+  Sun,
+  ArrowLeft,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { SiteHeader, SiteFooter } from '@/components/layout';
+import Link from 'next/link';
 import Editor from '@/components/Editor';
 import Renderer from '@/components/Renderer';
 import TableOfContents from '@/components/TableOfContents';
-import type { EditorRef, UploadConfig, UploadResult, UploadProgress } from '@/components/Editor';
+import type { EditorRef, UploadConfig, UploadResult } from '@/components/Editor';
 
-// Note: Config object created manually to avoid importing from authorly-editor
-// until v0.1.9 is published with upload support
+// Professional sample content showcasing all features
+const sampleContent = `<h1>Building Better Products</h1>
+<p>A comprehensive guide to modern product development with practical examples and best practices.</p>
 
-const sampleContent = `
-<h1>Welcome to the Authorly Playground</h1>
-<p>This is an interactive demo of the <strong>Authorly Editor</strong>. Try it out!</p>
+<h2>Introduction</h2>
+<p>Great products don't happen by accident. They're the result of <strong>careful planning</strong>, <em>iterative design</em>, and continuous improvement. This guide explores the fundamental principles that separate successful products from the rest.</p>
 
-<h2>Getting Started</h2>
-<p>You can start editing right away. Here are some things to try:</p>
-
+<h2>Core Principles</h2>
 <ul>
-  <li>Type <code>/</code> to open the block menu</li>
-  <li>Use <strong>Ctrl+B</strong> for bold, <strong>Ctrl+I</strong> for italic</li>
-  <li>Press <strong>Enter</strong> to create new blocks</li>
-  <li>Drag blocks to reorder them</li>
+<li>Start with user needs, not solutions</li>
+<li>Iterate quickly and learn from feedback</li>
+<li>Focus on solving real problems</li>
+<li>Build for scalability from day one</li>
 </ul>
 
-<h2>Code Block Example</h2>
-<pre><code>function greet(name) {
-  return \`Hello, \${name}!\`;
-}
+<h3>The Development Process</h3>
+<ol>
+<li>Research and validate your assumptions</li>
+<li>Design with the end user in mind</li>
+<li>Build an MVP to test core hypotheses</li>
+<li>Gather data and iterate based on insights</li>
+</ol>
 
-console.log(greet('World'));</code></pre>
+<blockquote><p>The best way to predict the future is to invent it. — Alan Kay</p></blockquote>
 
-<h2>Blockquote</h2>
-<blockquote><p>The best way to predict the future is to create it. — Abraham Lincoln</p></blockquote>
+<h2>Technical Implementation</h2>
+<p>Here's a simple example of how to structure your component architecture:</p>
 
-<h2>Try More Features</h2>
-<p>Explore tables, images, callouts, and more using the <code>/</code> menu!</p>
-`;
+<pre><code>// Component architecture example
+import { useState, useEffect } from 'react';
 
-type ViewMode = 'editor' | 'preview' | 'split';
+export function ProductCard({ product }) {
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    // Load product data
+    fetchProductDetails(product.id)
+      .then(data => setIsLoading(false));
+  }, [product.id]);
+  
+  return (
+    &lt;div className="card"&gt;
+      {isLoading ? 'Loading...' : product.name}
+    &lt;/div&gt;
+  );
+}</code></pre>
 
-const shortcuts = [
-  { keys: ['/', 'Slash'], desc: 'Block menu' },
-  { keys: ['Ctrl', 'B'], desc: 'Bold' },
-  { keys: ['Ctrl', 'I'], desc: 'Italic' },
-  { keys: ['Ctrl', 'U'], desc: 'Underline' },
-  { keys: ['Ctrl', 'K'], desc: 'Link' },
-  { keys: ['Ctrl', 'Z'], desc: 'Undo' },
-];
+<h2>Key Metrics</h2>
+<p>Track these essential metrics to measure product success:</p>
+
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User Engagement</td>
+<td>70%+</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Retention Rate</td>
+<td>60%+</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Time to Value</td>
+<td>&lt; 5 min</td>
+<td>Medium</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Next Steps</h2>
+<p>Ready to build? Start by defining your <code>core value proposition</code> and working backwards from there. Remember: <strong>focus on impact, not features</strong>.</p>`;
+
+type LeftPanelMode = 'editor' | 'toc';
 
 export default function PlaygroundPage() {
-  const { theme } = useTheme();
-  const [viewMode, setViewMode] = useState<ViewMode>('split');
+  const { theme, setTheme } = useTheme();
   const [content, setContent] = useState(sampleContent);
   const [copied, setCopied] = useState(false);
   const [wordCount, setWordCount] = useState(0);
-  const [showShortcuts, setShowShortcuts] = useState(false);
-  const [uploadEnabled, setUploadEnabled] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [leftPanel, setLeftPanel] = useState<LeftPanelMode>('editor');
   const editorRef = useRef<EditorRef>(null);
 
   // Handle hydration
@@ -85,31 +116,23 @@ export default function PlaygroundPage() {
     setMounted(true);
   }, []);
 
-  // Configure image upload (optional)
+  // Configure image upload
   const uploadConfig = useMemo<UploadConfig | undefined>(() => {
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
-    if (!cloudName || !uploadPreset) {
-      console.log('Cloudinary not configured - using base64 fallback');
-      return undefined;
-    }
+    if (!cloudName || !uploadPreset) return undefined;
 
-    setUploadEnabled(true);
-    // Create config object manually (compatible with authorly-editor v0.1.9+)
     return {
       provider: 'cloudinary',
-      cloudinary: {
-        cloudName,
-        uploadPreset,
-        folder: 'playground',
-      },
-      maxSizeBytes: 10 * 1024 * 1024, // 10MB
+      cloudinary: { cloudName, uploadPreset, folder: 'playground' },
+      maxSizeBytes: 10 * 1024 * 1024,
       autoOptimize: true,
       generateResponsive: true,
     };
   }, []);
 
+  // Calculate word count
   useEffect(() => {
     const text = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
     setWordCount(text ? text.split(' ').length : 0);
@@ -121,13 +144,6 @@ export default function PlaygroundPage() {
     setTimeout(() => setCopied(false), 2000);
   }, [content]);
 
-  const handleClear = useCallback(() => {
-    if (confirm('Clear all content?')) {
-      editorRef.current?.setHTML('<p></p>');
-      setContent('<p></p>');
-    }
-  }, []);
-
   const handleDownload = useCallback(() => {
     const blob = new Blob([content], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -138,205 +154,175 @@ export default function PlaygroundPage() {
     URL.revokeObjectURL(url);
   }, [content]);
 
+  const toggleTheme = useCallback(() => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  }, [theme, setTheme]);
+
   const isDark = mounted && theme === 'dark';
 
   return (
-    <div className="min-h-screen bg-background">
-      <SiteHeader />
-      
-      {/* Sub-header for playground controls */}
-      <div className="sticky top-16 z-40 border-b border-border/40 bg-background/80 backdrop-blur-xl">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14">
-            {/* Title */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </div>
-                <h1 className="text-lg font-bold">Playground</h1>
-              </div>
-              <Badge className="bg-gradient-to-r from-primary/20 to-purple-500/20 text-primary border-primary/30">
-                Interactive Demo
-              </Badge>
-            </div>
-
-            {/* View toggles */}
-            <div className="flex items-center gap-1 bg-muted/50 rounded-xl p-1 border border-border/50">
-              {[
-                { mode: 'editor' as const, icon: Code2, label: 'Edit' },
-                { mode: 'split' as const, icon: Split, label: 'Split' },
-                { mode: 'preview' as const, icon: Eye, label: 'Preview' },
-              ].map(({ mode, icon: Icon, label }) => (
-                <button
-                  key={mode}
-                  onClick={() => setViewMode(mode)}
-                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 ${
-                    viewMode === mode
-                      ? 'bg-background text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="hidden sm:inline">{label}</span>
-                </button>
-              ))}
+    <div className="h-screen flex flex-col bg-background">
+      {/* Slim Professional Header */}
+      <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex items-center justify-between h-14 px-6">
+          {/* Left: Logo + Back */}
+          <div className="flex items-center gap-6">
+            <Link 
+              href="/" 
+              className="flex items-center gap-2 text-foreground hover:text-foreground/80 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="font-semibold text-sm">Authorly</span>
+            </Link>
+            
+            <div className="h-4 w-px bg-border" />
+            
+            {/* Stats */}
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <span>{wordCount} words</span>
+              <span>·</span>
+              <span>{Math.ceil(wordCount / 200)} min read</span>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Toolbar */}
-      <div className="border-b border-border/40 bg-muted/20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-12">
-            {/* Left: Stats */}
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Type className="w-4 h-4" />
-                <span>{wordCount} words</span>
-              </div>
-              <div className="w-px h-4 bg-border" />
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <FileCode className="w-4 h-4" />
-                <span>{content.length} chars</span>
-              </div>
-            </div>
-
-            {/* Right: Actions */}
-            <div className="flex items-center gap-1">
-              {uploadEnabled && (
+          {/* Right: Actions */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleCopy}
+              className="inline-flex items-center gap-2 h-8 px-3 text-xs font-medium rounded-md border border-border bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              {copied ? (
                 <>
-                  <div className="flex items-center gap-1.5 text-xs text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md mr-2">
-                    <Upload className="w-3 h-3" />
-                    <span className="hidden sm:inline">Cloud Upload</span>
-                  </div>
+                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Copied</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>Copy HTML</span>
                 </>
               )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowShortcuts(!showShortcuts)}
-                className="gap-1.5 text-muted-foreground hover:text-foreground"
-              >
-                <Keyboard className="w-4 h-4" />
-                <span className="hidden sm:inline">Shortcuts</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleCopy}
-                className="gap-1.5"
-              >
-                {copied ? (
-                  <Check className="w-4 h-4 text-emerald-500" />
-                ) : (
-                  <Copy className="w-4 h-4" />
-                )}
-                <span className="hidden sm:inline">{copied ? 'Copied!' : 'Copy HTML'}</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleDownload}
-                className="gap-1.5"
-              >
-                <Download className="w-4 h-4" />
-                <span className="hidden sm:inline">Download</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleClear}
-                className="gap-1.5 text-red-500 hover:text-red-500 hover:bg-red-500/10"
-              >
-                <Trash2 className="w-4 h-4" />
-                <span className="hidden sm:inline">Clear</span>
-              </Button>
-            </div>
+            </button>
+            
+            <button
+              onClick={handleDownload}
+              className="inline-flex items-center gap-2 h-8 px-3 text-xs font-medium rounded-md border border-border bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download</span>
+            </button>
+
+            <div className="h-4 w-px bg-border mx-1" />
+
+            <button
+              onClick={toggleTheme}
+              className="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+
+            <button
+              onClick={() => setShowHelp(!showHelp)}
+              className="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+              aria-label="Help"
+            >
+              <HelpCircle className="w-4 h-4" />
+            </button>
           </div>
         </div>
-      </div>
 
-      {/* Keyboard shortcuts panel */}
-      <AnimatePresence>
-        {showShortcuts && (
+        {/* Help Panel */}
+        {showHelp && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="border-b border-border/40 bg-muted/30 overflow-hidden"
+            className="border-t border-border/40 bg-muted/30"
           >
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Info className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium">Keyboard Shortcuts</span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6"
-                  onClick={() => setShowShortcuts(false)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                {shortcuts.map((shortcut, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <div className="flex items-center gap-1">
-                      {shortcut.keys.map((key, j) => (
-                        <span key={j}>
-                          {j > 0 && <span className="text-muted-foreground mx-0.5">+</span>}
-                          <kbd className="px-2 py-1 text-xs font-mono bg-background border rounded-md shadow-sm">
-                            {key}
-                          </kbd>
-                        </span>
-                      ))}
-                    </div>
-                    <span className="text-sm text-muted-foreground">{shortcut.desc}</span>
+            <div className="px-6 py-4">
+              <div className="text-xs text-muted-foreground space-y-2">
+                <div className="flex items-center gap-8">
+                  <div className="flex items-center gap-2">
+                    <kbd className="px-2 py-1 text-xs font-mono bg-background border rounded">
+                      /
+                    </kbd>
+                    <span>Block menu</span>
                   </div>
-                ))}
+                  <div className="flex items-center gap-2">
+                    <kbd className="px-2 py-1 text-xs font-mono bg-background border rounded">
+                      Ctrl+B
+                    </kbd>
+                    <span>Bold</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <kbd className="px-2 py-1 text-xs font-mono bg-background border rounded">
+                      Ctrl+I
+                    </kbd>
+                    <span>Italic</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <kbd className="px-2 py-1 text-xs font-mono bg-background border rounded">
+                      Ctrl+K
+                    </kbd>
+                    <span>Link</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <kbd className="px-2 py-1 text-xs font-mono bg-background border rounded">
+                      Drag
+                    </kbd>
+                    <span>Reorder blocks</span>
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </header>
 
-      {/* Main content */}
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className={`grid gap-6 ${viewMode === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1'}`}
-        >
-          {/* Editor Panel */}
-          {(viewMode === 'editor' || viewMode === 'split') && (
-            <div className="bg-card rounded-2xl border border-border/50 shadow-xl overflow-hidden">
-              {/* Mac-style header */}
-              <div className="border-b border-border/50 px-4 py-3 flex items-center justify-between bg-muted/30">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-red-500" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                    <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                  </div>
-                  <span className="text-sm font-medium text-muted-foreground">Editor</span>
-                </div>
-                <Badge variant="outline" className="text-xs bg-background">
-                  Type / for commands
-                </Badge>
+      {/* Main Content: Side-by-Side Editor + Preview */}
+      <main className="flex-1 min-h-0">
+        <div className="h-full grid grid-cols-2 divide-x divide-border/40">
+          {/* Left Panel: Editor or TOC */}
+          <div className="flex flex-col h-full min-h-0">
+            <div className="flex-shrink-0 h-12 px-6 border-b border-border/40 bg-muted/20 flex items-center justify-between">
+              {/* Toggle Tabs */}
+              <div className="flex items-center gap-1 bg-background/50 rounded-md p-0.5">
+                <button
+                  onClick={() => setLeftPanel('editor')}
+                  className={`px-2.5 py-1 text-xs font-medium rounded transition-all ${
+                    leftPanel === 'editor'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Editor
+                </button>
+                <button
+                  onClick={() => setLeftPanel('toc')}
+                  className={`px-2.5 py-1 text-xs font-medium rounded transition-all ${
+                    leftPanel === 'toc'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  TOC
+                </button>
               </div>
-              <div className="p-4 md:p-6">
+              
+              {leftPanel === 'editor' && (
+                <span className="text-xs text-muted-foreground/60">Type / for blocks</span>
+              )}
+            </div>
+            
+            <div className="flex-1 overflow-y-auto overflow-x-hidden px-6 py-6 min-h-0">
+              {leftPanel === 'editor' ? (
                 <Editor
                   ref={editorRef}
                   initialContent={content}
                   onChange={setContent}
                   darkMode={isDark}
                   placeholder="Start writing..."
-                  style={{ minHeight: '500px' }}
                   imageUploadConfig={uploadConfig}
                   onUploadSuccess={(result: UploadResult) => {
                     console.log('Image uploaded:', result.url);
@@ -345,111 +331,39 @@ export default function PlaygroundPage() {
                     console.error('Upload error:', error.message);
                   }}
                 />
-              </div>
+              ) : (
+                <TableOfContents
+                  html={content}
+                  darkMode={isDark}
+                  title="Document Structure"
+                  maxLevel={4}
+                />
+              )}
             </div>
-          )}
+          </div>
 
           {/* Preview Panel */}
-          {(viewMode === 'preview' || viewMode === 'split') && (
-            <div className="bg-card rounded-2xl border border-border/50 shadow-xl overflow-hidden">
-              {/* Mac-style header */}
-              <div className="border-b border-border/50 px-4 py-3 flex items-center justify-between bg-muted/30">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-red-500" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                    <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                  </div>
-                  <span className="text-sm font-medium text-muted-foreground">Preview</span>
-                </div>
-                <Badge variant="outline" className="text-xs bg-background">
-                  <span className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                    Live
-                  </span>
-                </Badge>
-              </div>
-              <div className="p-4 md:p-6">
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <Renderer
-                    html={content}
-                    darkMode={isDark}
-                    enableCodeCopy={true}
-                    enableHeadingIds={true}
-                  />
-                </div>
+          <div className="flex flex-col h-full min-h-0">
+            <div className="flex-shrink-0 h-12 px-6 border-b border-border/40 bg-muted/20 flex items-center justify-between">
+              <h2 className="text-xs font-medium text-muted-foreground">Live Preview</h2>
+              <div className="flex items-center gap-1.5 text-xs text-emerald-500">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                <span>Live</span>
               </div>
             </div>
-          )}
-        </motion.div>
-
-        {/* Table of Contents (Preview mode only) */}
-        {viewMode === 'preview' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="mt-6 bg-card rounded-2xl border border-border/50 shadow-xl overflow-hidden"
-          >
-            <div className="border-b border-border/50 px-4 py-3 bg-muted/30">
-              <span className="text-sm font-medium">Table of Contents</span>
-            </div>
-            <div className="p-4">
-              <TableOfContents
-                html={content}
-                darkMode={isDark}
-                title=""
-                maxLevel={3}
-              />
-            </div>
-          </motion.div>
-        )}
-
-        {/* HTML Output */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          className="mt-6 bg-card rounded-2xl border border-border/50 shadow-xl overflow-hidden"
-        >
-          {/* Mac-style header */}
-          <div className="border-b border-border/50 px-4 py-3 flex items-center justify-between bg-muted/30">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-red-500" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <div className="w-3 h-3 rounded-full bg-emerald-500" />
+            <div className="flex-1 overflow-y-auto overflow-x-hidden px-6 py-6 min-h-0">
+              <div className="max-w-3xl mx-auto">
+                <Renderer
+                  html={content}
+                  darkMode={isDark}
+                  enableCodeCopy={true}
+                  enableHeadingIds={true}
+                />
               </div>
-              <span className="text-sm font-medium text-muted-foreground">HTML Output</span>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleCopy}
-              className="h-7 text-xs gap-1.5"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-3 h-3 text-emerald-500" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3 h-3" />
-                  Copy
-                </>
-              )}
-            </Button>
           </div>
-          <div className="p-4 bg-zinc-950 max-h-64 overflow-auto">
-            <pre className="text-xs font-mono text-zinc-400 whitespace-pre-wrap break-all">
-              {content}
-            </pre>
-          </div>
-        </motion.div>
+        </div>
       </main>
-
-      <SiteFooter />
     </div>
   );
 }

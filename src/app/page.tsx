@@ -5,16 +5,17 @@ import {
   HeroSection,
   EditorDemoSection,
   FeaturesSection,
-  ComparisonSection,
   CodeExampleSection,
+  ComparisonSection,
   CTASection,
 } from '@/components/marketing';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col bg-background">
       <SiteHeader />
-      <main>
+
+      <main className="flex-1">
         <HeroSection />
         <EditorDemoSection />
         <FeaturesSection />
@@ -22,6 +23,7 @@ export default function HomePage() {
         <ComparisonSection />
         <CTASection />
       </main>
+
       <SiteFooter />
     </div>
   );

@@ -115,14 +115,14 @@ Unlike other rich text editors that output complex JSON structures or proprietar
 ## Quick Example
 
 \`\`\`tsx
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 import 'authorly-editor/styles';
 
 function App() {
   const [content, setContent] = useState('<p>Hello World!</p>');
 
   return (
-    <ContentBlocksEditor
+    <AuthorlyEditor
       initialContent={content}
       onChange={setContent}
     />
@@ -180,8 +180,8 @@ For Next.js applications, you'll need to use dynamic imports to avoid SSR issues
 \`\`\`tsx
 import dynamic from 'next/dynamic';
 
-const ContentBlocksEditor = dynamic(
-  () => import('authorly-editor').then((mod) => mod.ContentBlocksEditor),
+const AuthorlyEditor = dynamic(
+  () => import('authorly-editor').then((mod) => mod.AuthorlyEditor),
   { ssr: false }
 );
 \`\`\`
@@ -201,14 +201,14 @@ This guide will help you set up a basic editor in just a few minutes.
 
 \`\`\`tsx
 import { useState } from 'react';
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 import 'authorly-editor/styles';
 
 function MyEditor() {
   const [content, setContent] = useState('<p>Start writing...</p>');
 
   return (
-    <ContentBlocksEditor
+    <AuthorlyEditor
       initialContent={content}
       onChange={setContent}
     />
@@ -230,7 +230,7 @@ function MyEditor() {
   };
 
   return (
-    <ContentBlocksEditor
+    <AuthorlyEditor
       initialContent={content}
       onChange={setContent}
       onSave={handleSave}  // Triggered by Ctrl+S
@@ -242,7 +242,7 @@ function MyEditor() {
 ## Dark Mode
 
 \`\`\`tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   darkMode={true}
   initialContent={content}
   onChange={setContent}
@@ -254,11 +254,11 @@ function MyEditor() {
 Use the Renderer component to display saved content:
 
 \`\`\`tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
+import { AuthorlyRenderer } from 'authorly-editor';
 
 function BlogPost({ content }) {
   return (
-    <ContentBlocksRenderer
+    <AuthorlyRenderer
       html={content}
       enableCodeCopy={true}
       enableHeadingIds={true}
@@ -276,15 +276,15 @@ Next, learn about all the available [Components](/docs/components/editor).`,
   'components/editor': {
     slug: 'components/editor',
     title: 'Editor Component',
-    description: 'The main ContentBlocksEditor component API reference.',
-    content: `# ContentBlocksEditor
+    description: 'The main AuthorlyEditor component API reference.',
+    content: `# AuthorlyEditor
 
 The main editor component for creating and editing content.
 
 ## Import
 
 \`\`\`tsx
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 \`\`\`
 
 ## Props
@@ -305,7 +305,7 @@ import { ContentBlocksEditor } from 'authorly-editor';
 ## Basic Usage
 
 \`\`\`tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   initialContent="<p>Hello World</p>"
   onChange={(html) => console.log(html)}
   darkMode={false}
@@ -319,15 +319,15 @@ See [Editor Ref](/docs/api/editor-ref) for available methods.`,
   'components/renderer': {
     slug: 'components/renderer',
     title: 'Renderer Component',
-    description: 'The ContentBlocksRenderer component for displaying content.',
-    content: `# ContentBlocksRenderer
+    description: 'The AuthorlyRenderer component for displaying content.',
+    content: `# AuthorlyRenderer
 
 Display saved HTML content with beautiful styling and optional enhancements.
 
 ## Import
 
 \`\`\`tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
+import { AuthorlyRenderer } from 'authorly-editor';
 \`\`\`
 
 ## Props
@@ -343,11 +343,11 @@ import { ContentBlocksRenderer } from 'authorly-editor';
 ## Basic Usage
 
 \`\`\`tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
+import { AuthorlyRenderer } from 'authorly-editor';
 
 function BlogPost({ content }) {
   return (
-    <ContentBlocksRenderer html={content} />
+    <AuthorlyRenderer html={content} />
   );
 }
 \`\`\`
@@ -366,14 +366,14 @@ The Renderer component:
     slug: 'components/toc',
     title: 'Table of Contents',
     description: 'Auto-generate navigation from your content headings.',
-    content: `# TableOfContents
+    content: `# AuthorlyTOC
 
 Automatically generate a table of contents from your HTML headings.
 
 ## Import
 
 \`\`\`tsx
-import { TableOfContents } from 'authorly-editor';
+import { AuthorlyTOC } from 'authorly-editor';
 \`\`\`
 
 ## Props
@@ -388,26 +388,26 @@ import { TableOfContents } from 'authorly-editor';
 ## Basic Usage
 
 \`\`\`tsx
-<TableOfContents html={content} />
+<AuthorlyTOC html={content} />
 \`\`\`
 
 ## Documentation Layout
 
 \`\`\`tsx
-import { ContentBlocksRenderer, TableOfContents } from 'authorly-editor';
+import { AuthorlyRenderer, AuthorlyTOC } from 'authorly-editor';
 
 function DocsPage({ content }) {
   return (
     <div className="flex gap-8">
       <aside className="w-64 sticky top-4">
-        <TableOfContents 
+        <AuthorlyTOC 
           html={content} 
           title="On this page"
           maxLevel={3}
         />
       </aside>
       <main className="flex-1">
-        <ContentBlocksRenderer 
+        <AuthorlyRenderer 
           html={content}
           enableHeadingIds={true}
         />
@@ -424,14 +424,14 @@ function DocsPage({ content }) {
     slug: 'components/table-of-contents',
     title: 'Table of Contents',
     description: 'Auto-generate navigation from your content headings.',
-    content: `# TableOfContents
+    content: `# AuthorlyTOC
 
 Automatically generate a table of contents from your HTML headings.
 
 ## Import
 
 \`\`\`tsx
-import { TableOfContents } from 'authorly-editor';
+import { AuthorlyTOC } from 'authorly-editor';
 \`\`\`
 
 ## Props
@@ -446,26 +446,26 @@ import { TableOfContents } from 'authorly-editor';
 ## Basic Usage
 
 \`\`\`tsx
-<TableOfContents html={content} />
+<AuthorlyTOC html={content} />
 \`\`\`
 
 ## Documentation Layout
 
 \`\`\`tsx
-import { ContentBlocksRenderer, TableOfContents } from 'authorly-editor';
+import { AuthorlyRenderer, AuthorlyTOC } from 'authorly-editor';
 
 function DocsPage({ content }) {
   return (
     <div className="flex gap-8">
       <aside className="w-64 sticky top-4">
-        <TableOfContents 
+        <AuthorlyTOC 
           html={content} 
           title="On this page"
           maxLevel={3}
         />
       </aside>
       <main className="flex-1">
-        <ContentBlocksRenderer 
+        <AuthorlyRenderer 
           html={content}
           enableHeadingIds={true}
         />
@@ -491,7 +491,7 @@ The toolbar provides quick access to text formatting and block conversion option
 The toolbar is automatically included with the editor.
 
 \`\`\`tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   showToolbar={true}          // Show toolbar (default: true)
   toolbarPosition="top"       // Position: 'top' or 'bottom'
 />
@@ -521,17 +521,17 @@ The toolbar is automatically included with the editor.
 ### Hide Toolbar
 
 \`\`\`tsx
-<ContentBlocksEditor showToolbar={false} />
+<AuthorlyEditor showToolbar={false} />
 \`\`\`
 
 ### Toolbar Position
 
 \`\`\`tsx
 // Toolbar at bottom
-<ContentBlocksEditor toolbarPosition="bottom" />
+<AuthorlyEditor toolbarPosition="bottom" />
 
 // Toolbar at top (default)
-<ContentBlocksEditor toolbarPosition="top" />
+<AuthorlyEditor toolbarPosition="top" />
 \`\`\``,
   },
 
@@ -594,7 +594,7 @@ Type \`/\` anywhere in the editor to open the block menu:
 Change the placeholder text that hints at the slash command:
 
 \`\`\`tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   placeholder="Type '/' for commands or start writing..."
 />
 \`\`\`
@@ -621,8 +621,8 @@ Authorly provides multiple ways to customize the appearance of the editor and re
 Both the Editor and Renderer support dark mode out of the box:
 
 \`\`\`tsx
-<ContentBlocksEditor darkMode={true} />
-<ContentBlocksRenderer darkMode={true} />
+<AuthorlyEditor darkMode={true} />
+<AuthorlyRenderer darkMode={true} />
 \`\`\`
 
 ## CSS Variables
@@ -666,7 +666,7 @@ Authorly uses CSS custom properties for theming. Override these in your global C
 Add custom classes to the editor wrapper:
 
 \`\`\`tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   className="my-custom-editor border-2 border-purple-500"
 />
 \`\`\`
@@ -739,7 +739,7 @@ export const themes = {
 };
 
 // Usage
-<ContentBlocksEditor {...themes.blog} />
+<AuthorlyEditor {...themes.blog} />
 \`\`\`
 
 ## Tailwind Integration
@@ -747,7 +747,7 @@ export const themes = {
 Authorly works seamlessly with Tailwind CSS:
 
 \`\`\`tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   className="prose prose-lg max-w-none dark:prose-invert"
 />
 \`\`\`
@@ -956,10 +956,11 @@ The block fetches Open Graph metadata:
   'api/editor-props': {
     slug: 'api/editor-props',
     title: 'Editor Props',
-    description: 'Complete reference for ContentBlocksEditor props.',
-    content: `# Editor Props
+    description: 'Complete reference for AuthorlyEditor props.',
+  content: `
+# Props Reference
 
-Complete reference for all ContentBlocksEditor props.
+Complete reference for all AuthorlyEditor props.
 
 ## Content Props
 
@@ -1048,12 +1049,12 @@ Access editor methods programmatically using a ref.
 
 \`\`\`tsx
 import { useRef } from 'react';
-import { ContentBlocksEditor, EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, EditorRef } from 'authorly-editor';
 
 function MyEditor() {
   const editorRef = useRef<EditorRef>(null);
 
-  return <ContentBlocksEditor ref={editorRef} />;
+  return <AuthorlyEditor ref={editorRef} />;
 }
 \`\`\`
 
@@ -1110,7 +1111,7 @@ function MyEditor() {
 
   return (
     <>
-      <ContentBlocksEditor ref={editorRef} />
+      <AuthorlyEditor ref={editorRef} />
       <button onClick={handleSave}>Save</button>
     </>
   );
@@ -1121,10 +1122,11 @@ function MyEditor() {
   'api/renderer-props': {
     slug: 'api/renderer-props',
     title: 'Renderer Props',
-    description: 'Complete reference for ContentBlocksRenderer props.',
-    content: `# Renderer Props
+    description: 'Complete reference for AuthorlyRenderer props.',
+  content: `
+# Props Reference
 
-Complete reference for all ContentBlocksRenderer props.
+Complete reference for all AuthorlyRenderer props.
 
 ## Required Props
 
@@ -1182,7 +1184,7 @@ Inline styles for the renderer container.
 function BlogPost({ content, isDark }) {
   return (
     <article className="max-w-4xl mx-auto px-4">
-      <ContentBlocksRenderer
+      <AuthorlyRenderer
         html={content}
         darkMode={isDark}
         enableCodeCopy={true}
@@ -1248,7 +1250,7 @@ onImageUpload?: (file: File) => Promise<string>
 Handle image uploads and return the final URL.
 
 \`\`\`tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   onImageUpload={async (file) => {
     const formData = new FormData();
     formData.append('image', file);
@@ -1333,7 +1335,7 @@ When darkMode={true}, the editor automatically adjusts colors:
 \`\`\`
 
 \`\`\`tsx
-<ContentBlocksEditor className="purple-theme" />
+<AuthorlyEditor className="purple-theme" />
 \`\`\``,
   },
 
@@ -1361,8 +1363,8 @@ import dynamic from 'next/dynamic';
 import { forwardRef } from 'react';
 import type { EditorRef } from 'authorly-editor';
 
-const ContentBlocksEditor = dynamic(
-  () => import('authorly-editor').then((mod) => mod.ContentBlocksEditor),
+const AuthorlyEditor = dynamic(
+  () => import('authorly-editor').then((mod) => mod.AuthorlyEditor),
   { 
     ssr: false,
     loading: () => <div>Loading editor...</div>
@@ -1376,7 +1378,7 @@ interface EditorProps {
 }
 
 const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
-  return <ContentBlocksEditor ref={ref} {...props} />;
+  return <AuthorlyEditor ref={ref} {...props} />;
 });
 
 Editor.displayName = 'Editor';
@@ -1509,7 +1511,7 @@ Learn how to implement image upload functionality.
 ## Basic Upload Handler
 
 \`\`\`tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   onImageUpload={async (file) => {
     const formData = new FormData();
     formData.append('image', file);
@@ -1546,7 +1548,7 @@ const uploadToCloudinary = async (file: File): Promise<string> => {
   return data.secure_url;
 };
 
-<ContentBlocksEditor onImageUpload={uploadToCloudinary} />
+<AuthorlyEditor onImageUpload={uploadToCloudinary} />
 \`\`\`
 
 ## Image Validation
@@ -1564,7 +1566,7 @@ const validateImage = (file: File): void => {
   }
 };
 
-<ContentBlocksEditor
+<AuthorlyEditor
   onImageUpload={async (file) => {
     validateImage(file);
     return await uploadImage(file);
@@ -1739,9 +1741,9 @@ All notable changes to Authorly.
 ### Added
 - Initial release
 - 13 block types: paragraph, headings, lists, code, quote, image, video, table, divider, callout, accordion
-- ContentBlocksEditor component
-- ContentBlocksRenderer component
-- TableOfContents component
+- AuthorlyEditor component
+- AuthorlyRenderer component
+- AuthorlyTOC component
 - Dark mode support
 - Keyboard shortcuts
 - Drag and drop reordering

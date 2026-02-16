@@ -316,7 +316,7 @@ Hello! In this tutorial, we'll learn...
 ### Lazy Loading
 
 ```tsx
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={content}
   lazyLoadVideos={true}
 />

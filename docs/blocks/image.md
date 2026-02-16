@@ -109,9 +109,9 @@ https://images.unsplash.com/photo-xxx
 #### Cloudinary
 
 ```tsx
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 
-<ContentBlocksEditor
+<AuthorlyEditor
   onImageUpload={async (file) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -131,7 +131,7 @@ import { ContentBlocksEditor } from 'authorly-editor';
 #### AWS S3
 
 ```tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   onImageUpload={async (file) => {
     // Get pre-signed URL from your backend
     const { uploadUrl, imageUrl } = await getPresignedUrl();
@@ -153,7 +153,7 @@ import { ContentBlocksEditor } from 'authorly-editor';
 ```tsx
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-<ContentBlocksEditor
+<AuthorlyEditor
   onImageUpload={async (file) => {
     const storageRef = ref(storage, `images/${file.name}`);
     await uploadBytes(storageRef, file);
@@ -290,7 +290,7 @@ alt="Application dashboard showing user activity metrics for the past 30 days"
 
 **Lazy loading:**
 ```tsx
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={content}
   lazyLoadImages={true}  // Load images as they enter viewport
 />
@@ -552,7 +552,7 @@ Images inside links need descriptive alt text:
 Load images only when needed:
 
 ```tsx
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={content}
   lazyLoadImages={true}
   lazyLoadOffset={200}  // Load 200px before entering viewport

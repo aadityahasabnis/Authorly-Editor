@@ -1,8 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, Github, Star, Sparkles, Terminal, Copy, Check } from 'lucide-react';
+import { ArrowRight, Github, Terminal, Copy, Check, Sparkles, Zap, Code2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/config/site';
 import { useState } from 'react';
@@ -18,159 +17,126 @@ export function CTASection() {
 
   return (
     <section className="py-24 md:py-32 relative overflow-hidden">
-      {/* Background effects */}
+      {/* Premium Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
       
-      {/* Animated gradient orbs */}
-      <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[128px] animate-pulse" />
-      <div className="absolute top-1/2 right-1/4 translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-purple-500/20 rounded-full blur-[128px] animate-pulse delay-1000" />
-      
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto"
-        >
-          {/* Main CTA Card */}
-          <div className="relative rounded-3xl overflow-hidden">
-            {/* Gradient border effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-primary via-purple-500 to-primary rounded-3xl opacity-50" />
-            <div className="absolute inset-[1px] bg-background/95 dark:bg-zinc-950/95 rounded-3xl" />
-            
-            {/* Content */}
-            <div className="relative px-8 py-16 md:px-16 md:py-20 text-center">
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20 text-sm font-medium mb-8"
-              >
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-foreground">Open Source & Free Forever</span>
-              </motion.div>
-              
-              {/* Headline */}
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
-                className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6"
-              >
-                Start building with{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500">
-                  Authorly
-                </span>{' '}
-                today
-              </motion.h2>
-              
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4 }}
-                className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10"
-              >
-                Join hundreds of developers building beautiful content editors. 
-                Get started in under 5 minutes with our simple API.
-              </motion.p>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Premium Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium">Open Source • MIT Licensed • Free Forever</span>
+          </div>
 
-              {/* Install Command */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
-                className="mb-10"
-              >
-                <div 
-                  onClick={copyCommand}
-                  className="group inline-flex items-center gap-3 px-6 py-4 bg-zinc-900 dark:bg-zinc-950 rounded-xl border border-zinc-800 cursor-pointer hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/10"
-                >
-                  <Terminal className="w-5 h-5 text-zinc-500" />
-                  <code className="text-sm md:text-base font-mono">
-                    <span className="text-emerald-400">npm</span>{' '}
-                    <span className="text-zinc-400">install</span>{' '}
-                    <span className="text-cyan-400">authorly-editor</span>
-                  </code>
-                  <div className="ml-2 p-1.5 rounded-md bg-zinc-800 group-hover:bg-zinc-700 transition-colors">
-                    {copied ? (
-                      <Check className="w-4 h-4 text-emerald-400" />
-                    ) : (
-                      <Copy className="w-4 h-4 text-zinc-400 group-hover:text-zinc-300" />
-                    )}
-                  </div>
-                </div>
-                <p className="text-xs text-muted-foreground mt-3">
-                  {copied ? 'Copied to clipboard!' : 'Click to copy'}
-                </p>
-              </motion.div>
+          {/* Main Headline */}
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            Start building with{' '}
+            <span className="bg-gradient-to-r from-primary via-purple-500 to-primary bg-clip-text text-transparent">
+              Authorly
+            </span>{' '}
+            today
+          </h2>
 
-              {/* Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.6 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
-              >
-                <Link href="/docs">
-                  <Button size="xl" className="gap-2 group bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-lg shadow-primary/25">
-                    Get Started
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </Link>
-                <Link href={siteConfig.links.github} target="_blank" rel="noopener noreferrer">
-                  <Button size="xl" variant="outline" className="gap-2 border-2">
-                    <Github className="w-5 h-5" />
-                    View on GitHub
-                  </Button>
-                </Link>
-              </motion.div>
+          {/* Subtext */}
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
+            Production-ready editor trusted by developers. Get started in minutes with clean APIs and comprehensive documentation.
+          </p>
 
-              {/* GitHub Stats */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7 }}
-                className="flex items-center justify-center gap-8"
+          {/* Install Command - Premium Terminal */}
+          <div className="mb-12">
+            <button
+              onClick={copyCommand}
+              className="group relative inline-flex items-center gap-4 px-8 py-5 rounded-2xl bg-zinc-900 dark:bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition-all shadow-2xl hover:shadow-primary/10"
+            >
+              {/* Terminal Window Dots */}
+              <div className="absolute left-6 top-5 flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                <div className="w-3 h-3 rounded-full bg-green-500/80" />
+              </div>
+
+              {/* Command */}
+              <div className="flex items-center gap-3 pt-6">
+                <Terminal className="w-5 h-5 text-emerald-400" />
+                <code className="font-mono text-base md:text-lg">
+                  <span className="text-emerald-400">$</span>{' '}
+                  <span className="text-zinc-400">npm install</span>{' '}
+                  <span className="text-cyan-400 font-semibold">authorly-editor</span>
+                </code>
+              </div>
+
+              {/* Copy Button */}
+              <div className="pt-6 pl-4 border-l border-zinc-700/50">
+                {copied ? (
+                  <Check className="w-5 h-5 text-emerald-400" />
+                ) : (
+                  <Copy className="w-5 h-5 text-zinc-500 group-hover:text-zinc-300 transition-colors" />
+                )}
+              </div>
+
+              {/* Hover Glow */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/0 via-primary/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity blur-xl -z-10" />
+            </button>
+            <p className="text-sm text-muted-foreground mt-4">
+              {copied ? '✓ Copied to clipboard!' : 'Click to copy'}
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <Link href="/docs">
+              <Button 
+                size="lg" 
+                className="h-14 px-8 text-base gap-2 group bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
               >
-                <Link
-                  href={siteConfig.links.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
-                >
-                  <Star className="w-4 h-4 group-hover:text-yellow-500 group-hover:fill-yellow-500 transition-colors" />
-                  <span>Star on GitHub</span>
-                </Link>
-                <div className="w-px h-4 bg-border" />
-                <Link
-                  href="/docs/contributing"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <span>Contribute</span>
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-                <div className="w-px h-4 bg-border" />
-                <Link
-                  href={siteConfig.links.npm}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <span>npm package</span>
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-              </motion.div>
+                <Zap className="w-5 h-5" />
+                Get Started
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
+            <Link href="/playground">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="h-14 px-8 text-base gap-2 border-2 hover:bg-accent"
+              >
+                <Code2 className="w-5 h-5" />
+                Try Playground
+              </Button>
+            </Link>
+            <Link href={siteConfig.links.github} target="_blank" rel="noopener noreferrer">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="h-14 px-8 text-base gap-2 border-2 hover:bg-accent"
+              >
+                <Github className="w-5 h-5" />
+                GitHub
+              </Button>
+            </Link>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <span>Production Ready</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+              <span>TypeScript Support</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+              <span>~30kb Gzipped</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+              <span>Zero Config</span>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

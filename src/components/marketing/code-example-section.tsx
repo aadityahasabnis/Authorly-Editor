@@ -6,14 +6,14 @@ import { Check, Copy, Terminal, Sparkles, Zap, FileCode } from 'lucide-react';
 import { Highlight, themes } from 'prism-react-renderer';
 
 const codeExamples = {
-  basic: `import { ContentBlocksEditor } from 'authorly-editor';
+  basic: `import { AuthorlyEditor } from 'authorly-editor';
 import 'authorly-editor/styles';
 
 function App() {
   const [content, setContent] = useState('');
 
   return (
-    <ContentBlocksEditor
+    <AuthorlyEditor
       initialContent={content}
       onChange={setContent}
       placeholder="Start writing..."
@@ -21,8 +21,8 @@ function App() {
   );
 }`,
   preview: `import { 
-  ContentBlocksEditor,
-  ContentBlocksRenderer 
+  AuthorlyEditor,
+  AuthorlyRenderer 
 } from 'authorly-editor';
 
 function BlogEditor() {
@@ -36,9 +36,9 @@ function BlogEditor() {
       </button>
       
       {preview ? (
-        <ContentBlocksRenderer html={content} />
+        <AuthorlyRenderer html={content} />
       ) : (
-        <ContentBlocksEditor
+        <AuthorlyEditor
           initialContent={content}
           onChange={setContent}
         />
@@ -47,22 +47,22 @@ function BlogEditor() {
   );
 }`,
   toc: `import { 
-  ContentBlocksRenderer,
-  TableOfContents 
+  AuthorlyRenderer,
+  AuthorlyTOC 
 } from 'authorly-editor';
 
 function DocsPage({ content }) {
   return (
     <div className="flex gap-8">
       <aside className="w-64 sticky top-0">
-        <TableOfContents 
+        <AuthorlyTOC 
           html={content} 
           title="On this page"
           maxLevel={3}
         />
       </aside>
       <main className="flex-1">
-        <ContentBlocksRenderer 
+        <AuthorlyRenderer 
           html={content}
           enableHeadingIds
           enableCodeCopy
@@ -97,7 +97,7 @@ export function CodeExampleSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-muted/30 via-background to-muted/30" />
       <div className="absolute inset-0 grid-pattern opacity-30" />
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">

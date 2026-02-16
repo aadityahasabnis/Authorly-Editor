@@ -30,7 +30,7 @@ Click the Accordion button (chevron icon) in the toolbar.
 
 ```tsx
 import { useRef } from 'react';
-import { ContentBlocksEditor, EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, EditorRef } from 'authorly-editor';
 
 function MyEditor() {
   const editorRef = useRef<EditorRef>(null);
@@ -46,7 +46,7 @@ function MyEditor() {
   return (
     <>
       <button onClick={insertAccordion}>Add FAQ Section</button>
-      <ContentBlocksEditor ref={editorRef} />
+      <AuthorlyEditor ref={editorRef} />
     </>
   );
 }
@@ -303,7 +303,7 @@ function FAQEditor() {
     <div>
       <h2>Frequently Asked Questions</h2>
       <button onClick={addFAQ}>Add Question</button>
-      <ContentBlocksEditor ref={editorRef} />
+      <AuthorlyEditor ref={editorRef} />
     </div>
   );
 }
@@ -314,7 +314,7 @@ function FAQEditor() {
 ```tsx
 // Collapsible API documentation
 editorRef.current?.insertBlock('accordion', {
-  title: 'API Reference: ContentBlocksEditor',
+  title: 'API Reference: AuthorlyEditor',
   content: `
     <h4>Props</h4>
     <table>
@@ -368,13 +368,13 @@ function AccordionControls() {
 
 ## Rendering
 
-Use the ContentBlocksRenderer to display accordion content:
+Use the AuthorlyRenderer to display accordion content:
 
 ```tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
+import { AuthorlyRenderer } from 'authorly-editor';
 
 function DisplayAccordions({ html }: { html: string }) {
-  return <ContentBlocksRenderer html={html} />;
+  return <AuthorlyRenderer html={html} />;
 }
 ```
 
@@ -427,5 +427,5 @@ The accordion block is accessible by default:
 
 - [Callout Block](/docs/blocks/callout) - Highlight important information
 - [Table Block](/docs/blocks/table) - Organize data
-- [ContentBlocksEditor](/docs/components/editor) - Editor component
+- [AuthorlyEditor](/docs/components/editor) - Editor component
 - [BlockMenu](/docs/components/block-menu) - Insert blocks via slash commands

@@ -193,7 +193,7 @@ installation instructions. For advanced configuration, see the
 Using inline code for clarity:
 
 ```
-The `ContentBlocksEditor` component accepts an `initialContent` prop containing 
+The `AuthorlyEditor` component accepts an `initialContent` prop containing 
 HTML. When the user makes changes, the `onChange` callback receives updated HTML 
 that you can save to your database.
 ```
@@ -299,7 +299,7 @@ Override with your own CSS:
 Paragraph styling automatically adapts to dark mode:
 
 ```tsx
-<ContentBlocksEditor darkMode={true} />
+<AuthorlyEditor darkMode={true} />
 ```
 
 Custom dark mode styles:
@@ -416,7 +416,7 @@ to the [installation guide](/docs/installation) to start building.
 ### Technical Documentation
 
 ```
-The `ContentBlocksEditor` component is the main entry point for the editor. 
+The `AuthorlyEditor` component is the main entry point for the editor. 
 It accepts **HTML content** as input and outputs **HTML** when the user makes 
 changes.
 

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Github, Twitter, Mail, Heart, ArrowUpRight, Sparkles } from 'lucide-react';
+import { Github, Twitter, Linkedin, Mail, Heart, ArrowUpRight, ArrowRight, Zap, Package, FileCode, Star } from 'lucide-react';
 import { siteConfig } from '@/config/site';
 
 const footerLinks = {
@@ -9,24 +9,23 @@ const footerLinks = {
     { title: 'Features', href: '/#features' },
     { title: 'Playground', href: '/playground' },
     { title: 'Examples', href: '/examples' },
-    { title: 'Pricing', href: '/#pricing' },
+    { title: 'Changelog', href: '/docs/changelog' },
   ],
-  docs: [
-    { title: 'Getting Started', href: '/docs' },
-    { title: 'Installation', href: '/docs/installation' },
-    { title: 'Components', href: '/docs/components/editor' },
+  developers: [
+    { title: 'Documentation', href: '/docs' },
     { title: 'API Reference', href: '/docs/api/editor-props' },
+    { title: 'Components', href: '/docs/components/editor' },
+    { title: 'Installation', href: '/docs/installation' },
   ],
   resources: [
-    { title: 'Changelog', href: '/docs/changelog' },
-    { title: 'Roadmap', href: '/docs/roadmap' },
-    { title: 'Contributing', href: '/docs/contributing' },
-    { title: 'License', href: 'https://github.com/aadityahasabnis/Authorly/blob/main/LICENSE', external: true },
-  ],
-  community: [
     { title: 'GitHub', href: siteConfig.links.github, external: true },
-    { title: 'Twitter', href: siteConfig.links.twitter, external: true },
-    { title: 'npm', href: siteConfig.links.npm, external: true },
+    { title: 'npm Package', href: siteConfig.links.npm, external: true },
+    { title: 'Contributing', href: '/docs/contributing' },
+    { title: 'License (MIT)', href: 'https://github.com/aadityahasabnis/Authorly/blob/main/LICENSE', external: true },
+  ],
+  legal: [
+    { title: 'Privacy Policy', href: '/docs/privacy' },
+    { title: 'Terms of Service', href: '/docs/terms' },
   ],
 };
 
@@ -42,11 +41,11 @@ function FooterLink({ href, children, external }: FooterLinkProps) {
       href={href}
       target={external ? '_blank' : undefined}
       rel={external ? 'noopener noreferrer' : undefined}
-      className="group flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      className="group flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-all duration-200"
     >
-      {children}
+      <span className="group-hover:translate-x-0.5 transition-transform duration-200">{children}</span>
       {external && (
-        <ArrowUpRight className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+        <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
       )}
     </Link>
   );
@@ -54,71 +53,86 @@ function FooterLink({ href, children, external }: FooterLinkProps) {
 
 export function SiteFooter() {
   return (
-    <footer className="relative border-t border-border/40 bg-gradient-to-b from-background to-muted/30">
-      {/* Decorative top gradient */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+    <footer className="relative overflow-hidden">
+      {/* Gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-t from-muted/80 via-muted/40 to-transparent" />
+      <div className="absolute inset-0 hero-grid opacity-20" />
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main footer */}
-        <div className="py-16 grid grid-cols-2 md:grid-cols-6 gap-8 lg:gap-12">
-          {/* Brand */}
-          <div className="col-span-2">
-            <Link href="/" className="flex items-center gap-3 mb-6 group">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary to-purple-600 rounded-xl blur-sm opacity-50 group-hover:opacity-75 transition-opacity" />
-                <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
+      {/* Top decorative border */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative">
+        
+        {/* Top section with CTA */}
+        <div className="py-16 border-b border-border/50">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+            {/* Left: Brand + tagline */}
+            <div className="text-center lg:text-left">
+              <Link href="/" className="inline-flex items-center gap-3 mb-4 group">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary to-purple-600 rounded-xl blur-md opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                  <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg shadow-primary/25">
+                    <svg
+                      className="w-6 h-6 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                  </div>
                 </div>
-              </div>
-              <span className="text-xl font-bold">{siteConfig.name}</span>
-            </Link>
+                <div>
+                  <span className="text-2xl font-bold block">{siteConfig.name}</span>
+                  <span className="text-sm text-muted-foreground">Rich Text Editor for React</span>
+                </div>
+              </Link>
+            </div>
             
-            <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-              {siteConfig.tagline}
-            </p>
-            
-            {/* Social Links */}
-            <div className="flex items-center gap-2">
+            {/* Right: Quick actions */}
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href="/docs"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-all duration-200 shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105"
+              >
+                <Zap className="w-4 h-4" />
+                Get Started
+                <ArrowRight className="w-4 h-4" />
+              </Link>
               <Link
                 href={siteConfig.links.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 rounded-lg bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-card border border-border/50 font-medium text-sm hover:bg-muted hover:border-border transition-all duration-200"
               >
-                <Github className="w-5 h-5" />
+                <Star className="w-4 h-4" />
+                Star on GitHub
               </Link>
               <Link
-                href={siteConfig.links.twitter}
+                href={siteConfig.links.npm}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 rounded-lg bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-card border border-border/50 font-medium text-sm hover:bg-muted hover:border-border transition-all duration-200"
               >
-                <Twitter className="w-5 h-5" />
-              </Link>
-              <Link
-                href="mailto:hello@authorly.dev"
-                className="p-2.5 rounded-lg bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
-              >
-                <Mail className="w-5 h-5" />
+                <Package className="w-4 h-4" />
+                npm
               </Link>
             </div>
           </div>
+        </div>
 
-          {/* Links */}
+        {/* Links Grid */}
+        <div className="py-12 grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
           <div>
-            <h3 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">Product</h3>
+            <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+              Product
+            </h3>
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.href}>
@@ -129,9 +143,12 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">Docs</h3>
+            <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+              Developers
+            </h3>
             <ul className="space-y-3">
-              {footerLinks.docs.map((link) => (
+              {footerLinks.developers.map((link) => (
                 <li key={link.href}>
                   <FooterLink href={link.href}>{link.title}</FooterLink>
                 </li>
@@ -140,7 +157,10 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">Resources</h3>
+            <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              Resources
+            </h3>
             <ul className="space-y-3">
               {footerLinks.resources.map((link) => (
                 <li key={link.href}>
@@ -151,60 +171,79 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">Community</h3>
-            <ul className="space-y-3">
-              {footerLinks.community.map((link) => (
-                <li key={link.href}>
-                  <FooterLink href={link.href} external={link.external}>{link.title}</FooterLink>
-                </li>
+            <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+              Connect
+            </h3>
+            <div className="space-y-3 mb-6">
+              {footerLinks.legal.map((link) => (
+                <div key={link.href}>
+                  <FooterLink href={link.href}>{link.title}</FooterLink>
+                </div>
               ))}
-            </ul>
+            </div>
             
-            {/* Newsletter signup teaser */}
-            <div className="mt-6 p-4 rounded-xl bg-gradient-to-br from-primary/10 to-purple-500/10 border border-primary/20">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium">Stay updated</span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Star us on GitHub to follow updates
-              </p>
+            {/* Social Icons */}
+            <div className="flex items-center gap-2">
+              <Link
+                href={siteConfig.links.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-card border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted hover:border-border hover:scale-110 transition-all duration-200"
+              >
+                <Github className="w-5 h-5" />
+              </Link>
+              <Link
+                href={siteConfig.links.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-card border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted hover:border-border hover:scale-110 transition-all duration-200"
+              >
+                <Twitter className="w-5 h-5" />
+              </Link>
+              <Link
+                href="mailto:hello@authorly.dev"
+                className="w-10 h-10 rounded-xl bg-card border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted hover:border-border hover:scale-110 transition-all duration-200"
+              >
+                <Mail className="w-5 h-5" />
+              </Link>
             </div>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="py-6 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
-          </p>
-          
-          <div className="flex items-center gap-6">
-            <Link 
-              href="/docs/privacy" 
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Privacy
-            </Link>
-            <Link 
-              href="/docs/terms" 
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Terms
-            </Link>
-            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-              Made with{' '}
-              <Heart className="w-4 h-4 text-red-500 fill-red-500 animate-pulse" />
-              {' '}by{' '}
-              <Link
-                href="https://github.com/aadityahasabnis"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-foreground hover:text-primary transition-colors"
-              >
-                {siteConfig.creator}
-              </Link>
-            </p>
+        <div className="py-6 border-t border-border/50">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+              <span>&copy; {new Date().getFullYear()} {siteConfig.name}</span>
+              <span className="hidden md:inline text-border">|</span>
+              <span className="flex items-center gap-1.5">
+                Made with <Heart className="w-4 h-4 text-red-500 fill-red-500" /> by{' '}
+                <Link
+                  href="https://github.com/aadityahasabnis"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-foreground hover:text-primary transition-colors"
+                >
+                  {siteConfig.creator}
+                </Link>
+              </span>
+            </div>
+            
+            {/* Tech badges */}
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card border border-border/50 text-xs font-medium text-muted-foreground">
+                <FileCode className="w-3.5 h-3.5" />
+                TypeScript
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card border border-border/50 text-xs font-medium text-muted-foreground">
+                <Zap className="w-3.5 h-3.5" />
+                ~30kb
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                MIT License
+              </span>
+            </div>
           </div>
         </div>
       </div>

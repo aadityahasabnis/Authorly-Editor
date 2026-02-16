@@ -37,7 +37,7 @@ import { Toolbar } from 'authorly-editor';
 
 ```tsx
 import { useRef } from 'react';
-import { ContentBlocksEditor, Toolbar, EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, Toolbar, EditorRef } from 'authorly-editor';
 
 function EditorWithToolbar() {
   const editorRef = useRef<EditorRef>(null);
@@ -49,7 +49,7 @@ function EditorWithToolbar() {
         darkMode={false}
       />
       
-      <ContentBlocksEditor 
+      <AuthorlyEditor 
         ref={editorRef}
         placeholder="Start typing..."
       />
@@ -78,7 +78,7 @@ function DarkModeToolbar() {
         darkMode={isDark}
       />
       
-      <ContentBlocksEditor 
+      <AuthorlyEditor 
         ref={editorRef}
         darkMode={isDark}
       />
@@ -342,12 +342,12 @@ function MinimalToolbar({ editor }: { editor: EditorInstance }) {
 // Top toolbar
 <div className="editor-container">
   <Toolbar editor={editorRef.current} position="top" />
-  <ContentBlocksEditor ref={editorRef} />
+  <AuthorlyEditor ref={editorRef} />
 </div>
 
 // Bottom toolbar
 <div className="editor-container">
-  <ContentBlocksEditor ref={editorRef} />
+  <AuthorlyEditor ref={editorRef} />
   <Toolbar editor={editorRef.current} position="bottom" />
 </div>
 ```
@@ -372,7 +372,7 @@ function EditorWithCustomExport() {
   return (
     <>
       <Toolbar editor={editorRef.current} />
-      <ContentBlocksEditor ref={editorRef} />
+      <AuthorlyEditor ref={editorRef} />
       <button onClick={handleCustomExport}>
         Save to Server
       </button>
@@ -414,6 +414,6 @@ function EditorWithCustomExport() {
 
 ## See Also
 
-- [ContentBlocksEditor](/docs/components/editor) - Main editor component
+- [AuthorlyEditor](/docs/components/editor) - Main editor component
 - [BlockMenu](/docs/components/block-menu) - Slash command menu
 - [Keyboard Shortcuts Guide](/docs/guides/shortcuts) - Full shortcut reference

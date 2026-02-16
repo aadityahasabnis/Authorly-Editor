@@ -66,15 +66,15 @@ Authorly uses browser-only APIs and must be loaded dynamically in Next.js to avo
 
 import dynamic from 'next/dynamic';
 
-const ContentBlocksEditor = dynamic(
-  () => import('authorly-editor').then((mod) => mod.ContentBlocksEditor),
+const AuthorlyEditor = dynamic(
+  () => import('authorly-editor').then((mod) => mod.AuthorlyEditor),
   { 
     ssr: false,
     loading: () => <div>Loading editor...</div>
   }
 );
 
-export default ContentBlocksEditor;
+export default AuthorlyEditor;
 ```
 
 See the [Next.js Integration](/docs/guides/nextjs) guide for complete setup instructions.
@@ -84,11 +84,11 @@ See the [Next.js Integration](/docs/guides/nextjs) guide for complete setup inst
 After installation, verify everything works:
 
 ```tsx
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 import 'authorly-editor/styles';
 
 function App() {
-  return <ContentBlocksEditor initialContent="<p>Hello World!</p>" />;
+  return <AuthorlyEditor initialContent="<p>Hello World!</p>" />;
 }
 ```
 

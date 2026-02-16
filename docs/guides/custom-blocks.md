@@ -229,12 +229,12 @@ function generateId(): string {
 To use your custom block in the editor, pass it via the `customBlocks` prop:
 
 ```tsx
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 import { alertBlock } from './blocks/alert';
 
 function App() {
   return (
-    <ContentBlocksEditor 
+    <AuthorlyEditor 
       customBlocks={[alertBlock]}
     />
   );

@@ -18,7 +18,7 @@ const searchIndex: SearchResult[] = [
   { title: 'Installation', description: 'Install Authorly via npm, yarn, or pnpm', href: '/docs/installation', section: 'Getting Started' },
   { title: 'Quick Start', description: 'Get up and running with Authorly in minutes', href: '/docs/quick-start', section: 'Getting Started' },
   // Components
-  { title: 'Editor', description: 'The main ContentBlocksEditor component', href: '/docs/components/editor', section: 'Components' },
+  { title: 'Editor', description: 'The main AuthorlyEditor component', href: '/docs/components/editor', section: 'Components' },
   { title: 'Renderer', description: 'Render saved content as HTML', href: '/docs/components/renderer', section: 'Components' },
   { title: 'Table of Contents', description: 'Auto-generate navigation from headings', href: '/docs/components/toc', section: 'Components' },
   { title: 'Toolbar', description: 'Formatting toolbar component', href: '/docs/components/toolbar', section: 'Components' },

@@ -10,14 +10,14 @@ Create a simple editor that stores content in state:
 'use client'; // For Next.js App Router
 
 import { useState } from 'react';
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 import 'authorly-editor/styles';
 
 export default function MyEditor() {
   const [content, setContent] = useState('<p>Start writing...</p>');
 
   return (
-    <ContentBlocksEditor
+    <AuthorlyEditor
       initialContent={content}
       onChange={setContent}
     />
@@ -54,7 +54,7 @@ export default function MyEditor() {
 
   return (
     <div>
-      <ContentBlocksEditor
+      <AuthorlyEditor
         initialContent={content}
         onChange={setContent}
         onSave={handleSave}  // Triggered by Ctrl+S
@@ -79,7 +79,7 @@ export default function MyEditor() {
       <button onClick={() => setDarkMode(!darkMode)}>
         Toggle {darkMode ? 'Light' : 'Dark'} Mode
       </button>
-      <ContentBlocksEditor
+      <AuthorlyEditor
         initialContent={content}
         onChange={setContent}
         darkMode={darkMode}
@@ -94,21 +94,25 @@ export default function MyEditor() {
 Enable cloud uploads to Cloudinary or S3 (optional):
 
 ```tsx
-import { ContentBlocksEditor, createCloudinaryConfig } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
+import type { UploadConfig } from 'authorly-editor';
 
 export default function MyEditor() {
   const [content, setContent] = useState('');
 
   // Configure Cloudinary upload
-  const uploadConfig = createCloudinaryConfig({
-    cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
-    uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
-    folder: 'blog-images',
-    maxSizeMB: 5,
-  });
+  const uploadConfig: UploadConfig = {
+    provider: 'cloudinary',
+    cloudinary: {
+      cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
+      uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
+      folder: 'blog-images',
+    },
+    maxSizeBytes: 5 * 1024 * 1024, // 5MB
+  };
 
   return (
-    <ContentBlocksEditor
+    <AuthorlyEditor
       initialContent={content}
       onChange={setContent}
       imageUploadConfig={uploadConfig}
@@ -136,13 +140,13 @@ See the [Image Upload Guide](./guides/image-uploads) for S3 and custom upload ha
 Use the Renderer component to display your saved HTML:
 
 ```tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
+import { AuthorlyRenderer } from 'authorly-editor';
 import 'authorly-editor/styles';
 
 export default function BlogPost({ content }: { content: string }) {
   return (
     <article>
-      <ContentBlocksRenderer
+      <AuthorlyRenderer
         html={content}
         enableCodeCopy={true}
         enableHeadingIds={true}
@@ -171,7 +175,7 @@ import 'authorly-editor/styles';
 The `authorly-editor/styles` import provides:
 
 - ✅ Complete editor layout and structure
-- ✅ All 13+ block type styles (headings, lists, code, tables, etc.)
+- ✅ All 16 block type styles (headings, lists, code, tables, etc.)
 - ✅ Toolbar and menu styling
 - ✅ Dark mode support
 - ✅ Scrollbars, focus states, selections
@@ -212,21 +216,21 @@ If you want the editor to match your app's theme, override **ONLY** the CSS colo
 
 ### Rendering HTML Correctly
 
-When using `ContentBlocksRenderer`, the HTML is rendered **as-is** with Authorly's styles:
+When using `AuthorlyRenderer`, the HTML is rendered **as-is** with Authorly's styles:
 
 ```tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
+import { AuthorlyRenderer } from 'authorly-editor';
 import 'authorly-editor/styles'; // Required!
 
 export default function Article({ content }: { content: string }) {
   return (
     <article>
       {/* ✅ CORRECT: No wrapper classes needed */}
-      <ContentBlocksRenderer html={content} />
+      <AuthorlyRenderer html={content} />
       
       {/* ❌ WRONG: Don't add prose/typography classes */}
       {/* <div className="prose">
-        <ContentBlocksRenderer html={content} />
+        <AuthorlyRenderer html={content} />
       </div> */}
     </article>
   );
@@ -246,12 +250,12 @@ You can style the **container** around the editor, but don't touch editor intern
 ```tsx
 // ✅ CORRECT: Style the wrapper
 <div className="max-w-4xl mx-auto p-6 border rounded-lg">
-  <ContentBlocksEditor />
+  <AuthorlyEditor />
 </div>
 
 // ❌ WRONG: Override editor internals
 <div className="custom-editor">
-  <ContentBlocksEditor />
+  <AuthorlyEditor />
 </div>
 <style>{`.custom-editor .cb-content { padding: 0; }`}</style>
 ```
@@ -291,14 +295,14 @@ For more details, see the [Advanced Styling Guide](/docs/guides/styling).
 Generate an automatic table of contents from headings:
 
 ```tsx
-import { ContentBlocksRenderer, TableOfContents } from 'authorly-editor';
+import { AuthorlyRenderer, AuthorlyTOC } from 'authorly-editor';
 
 export default function DocumentPage({ content }: { content: string }) {
   return (
     <div className="flex gap-8">
       {/* Sidebar TOC */}
       <aside className="w-64 sticky top-4">
-        <TableOfContents
+        <AuthorlyTOC
           html={content}
           title="On this page"
           maxLevel={3}
@@ -307,7 +311,7 @@ export default function DocumentPage({ content }: { content: string }) {
 
       {/* Main content */}
       <main className="flex-1">
-        <ContentBlocksRenderer
+        <AuthorlyRenderer
           html={content}
           enableHeadingIds={true}  // Required for TOC links
         />
@@ -322,7 +326,7 @@ export default function DocumentPage({ content }: { content: string }) {
 ### Custom Placeholder
 
 ```tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   placeholder="Type '/' for commands or start writing..."
   initialContent={content}
   onChange={setContent}
@@ -332,7 +336,7 @@ export default function DocumentPage({ content }: { content: string }) {
 ### Hiding the Toolbar
 
 ```tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   showToolbar={false}
   initialContent={content}
   onChange={setContent}
@@ -342,8 +346,8 @@ export default function DocumentPage({ content }: { content: string }) {
 ### Toolbar Position
 
 ```tsx
-<ContentBlocksEditor
-  toolbarPosition="bottom"  // Options: 'top' | 'bottom'
+<AuthorlyEditor
+  toolbarPosition="bottom"  // Options: 'top' | 'bottom' | 'floating'
   initialContent={content}
   onChange={setContent}
 />
@@ -352,7 +356,7 @@ export default function DocumentPage({ content }: { content: string }) {
 ### Read-Only Mode
 
 ```tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   readOnly={true}
   initialContent={content}
 />
@@ -364,7 +368,7 @@ Access editor methods programmatically:
 
 ```tsx
 import { useRef } from 'react';
-import { ContentBlocksEditor, type EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, type EditorRef } from 'authorly-editor';
 
 export default function MyEditor() {
   const editorRef = useRef<EditorRef>(null);
@@ -384,7 +388,7 @@ export default function MyEditor() {
         <button onClick={handleExport}>Export HTML</button>
         <button onClick={handleClear}>Clear All</button>
       </div>
-      <ContentBlocksEditor ref={editorRef} />
+      <AuthorlyEditor ref={editorRef} />
     </div>
   );
 }
@@ -398,7 +402,7 @@ Here's a full-featured editor with all common features:
 'use client';
 
 import { useState, useRef } from 'react';
-import { ContentBlocksEditor, type EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, type EditorRef } from 'authorly-editor';
 import 'authorly-editor/styles';
 
 export default function FullEditor() {
@@ -426,7 +430,7 @@ export default function FullEditor() {
       </div>
 
       {/* Editor */}
-      <ContentBlocksEditor
+      <AuthorlyEditor
         ref={editorRef}
         initialContent={content}
         onChange={setContent}
@@ -447,7 +451,7 @@ export default function FullEditor() {
 Now that you have a working editor:
 
 - Explore all [Components](/docs/components/editor) and their props
-- Learn about the 12+ [Block Types](/docs/blocks)
+- Learn about the 16 [Block Types](/docs/blocks)
 - Check out the [API Reference](/docs/api/editor-props)
 - See [Keyboard Shortcuts](/docs/guides/shortcuts) for power users
 - Try the [Playground](/playground) for interactive examples

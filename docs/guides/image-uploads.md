@@ -15,8 +15,8 @@ Authorly supports flexible image upload integration through the `imageUploadConf
 ### Basic Custom Upload
 
 ```tsx
-import { ContentBlocksEditor } from 'authorly-editor';
-import 'authorly-editor/dist/style.css';
+import { AuthorlyEditor } from 'authorly-editor';
+import 'authorly-editor/styles';
 
 function Editor() {
   const uploadHandler = async (file: File) => {
@@ -40,7 +40,7 @@ function Editor() {
   };
 
   return (
-    <ContentBlocksEditor
+    <AuthorlyEditor
       imageUploadConfig={{
         provider: 'custom',
         customUpload: uploadHandler,
@@ -62,8 +62,7 @@ function Editor() {
 ### Basic Configuration
 
 ```tsx
-import { ContentBlocksEditor } from 'authorly-editor';
-import { createCloudinaryConfig } from 'authorly-editor';
+import { AuthorlyEditor, createCloudinaryConfig } from 'authorly-editor';
 
 function Editor() {
   const uploadConfig = createCloudinaryConfig({
@@ -71,7 +70,7 @@ function Editor() {
     uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
   });
 
-  return <ContentBlocksEditor imageUploadConfig={uploadConfig} />;
+  return <AuthorlyEditor imageUploadConfig={uploadConfig} />;
 }
 ```
 
@@ -109,7 +108,7 @@ const uploadConfig = createCloudinaryConfig({
 ### Manual Configuration
 
 ```tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   imageUploadConfig={{
     provider: 'cloudinary',
     cloudinary: {
@@ -659,7 +658,7 @@ const uploadConfig = createCustomUploadConfig(
 The editor automatically shows upload progress and errors, but you can customize:
 
 ```tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   imageUploadConfig={uploadConfig}
   onError={(error) => {
     // Custom error handling

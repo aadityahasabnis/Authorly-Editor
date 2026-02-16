@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
 /* ========================================
-   LANDING PAGE THEME TOKENS
-   Only for landing page UI - NOT for editor content
+   MODERN SAAS LANDING PAGE THEME
+   Inspired by Vercel, Linear, Stripe
    ======================================== */
+
 :root {
   /* Light theme */
   --background: #ffffff;
@@ -23,17 +24,22 @@
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --radius: 0.75rem;
+  
+  /* Gradient colors */
+  --gradient-start: #6366f1;
+  --gradient-mid: #8b5cf6;
+  --gradient-end: #a855f7;
 }
 
 .dark {
-  /* Dark theme */
+  /* Dark theme - rich, modern dark */
   --background: #09090b;
   --foreground: #fafafa;
   --card: #18181b;
   --card-foreground: #fafafa;
   --primary: #818cf8;
   --primary-foreground: #09090b;
-  --secondary: #27272a;
+  --secondary: #1f1f23;
   --secondary-foreground: #a1a1aa;
   --muted: #27272a;
   --muted-foreground: #a1a1aa;
@@ -43,6 +49,11 @@
   --ring: #818cf8;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
+  
+  /* Dark mode gradients */
+  --gradient-start: #818cf8;
+  --gradient-mid: #a78bfa;
+  --gradient-end: #c084fc;
 }
 
 @theme inline {
@@ -68,10 +79,14 @@
 }
 
 /* ========================================
-   GLOBAL RESETS (Minimal - Landing page only)
+   GLOBAL RESETS & BASE STYLES
    ======================================== */
 * {
   border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -80,16 +95,430 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Selection styling */
+::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* ========================================
+   GRADIENT TEXT & BACKGROUNDS
+   ======================================== */
+.gradient-text {
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-mid) 50%, var(--gradient-end) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.gradient-text-animated {
+  background: linear-gradient(270deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end), var(--gradient-start));
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 8s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradient-border {
+  position: relative;
+  background: var(--card);
+  border-radius: var(--radius);
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+
+/* ========================================
+   GLASSMORPHISM EFFECTS
+   ======================================== */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(24, 24, 27, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.dark .glass-card {
+  background: rgba(24, 24, 27, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ========================================
+   GLOW EFFECTS
+   ======================================== */
+.glow {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3),
+              0 0 40px rgba(99, 102, 241, 0.2),
+              0 0 60px rgba(99, 102, 241, 0.1);
+}
+
+.dark .glow {
+  box-shadow: 0 0 20px rgba(129, 140, 248, 0.4),
+              0 0 40px rgba(129, 140, 248, 0.3),
+              0 0 60px rgba(129, 140, 248, 0.2);
+}
+
+.glow-text {
+  text-shadow: 0 0 20px rgba(99, 102, 241, 0.5),
+               0 0 40px rgba(99, 102, 241, 0.3);
+}
+
+.dark .glow-text {
+  text-shadow: 0 0 20px rgba(129, 140, 248, 0.6),
+               0 0 40px rgba(129, 140, 248, 0.4);
+}
+
+/* ========================================
+   BUTTON STYLES
+   ======================================== */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 
+         bg-primary text-primary-foreground font-semibold rounded-xl
+         transition-all duration-300 ease-out
+         hover:scale-105 hover:shadow-lg hover:shadow-primary/25
+         active:scale-100;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 
+         bg-secondary text-foreground font-semibold rounded-xl border
+         transition-all duration-300 ease-out
+         hover:bg-muted hover:border-primary/50
+         active:scale-95;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2
+         text-muted-foreground font-medium rounded-lg
+         transition-all duration-200
+         hover:text-foreground hover:bg-muted;
+}
+
+.btn-gradient {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 
+         font-semibold rounded-xl text-white
+         transition-all duration-300 ease-out
+         hover:scale-105 hover:shadow-xl
+         active:scale-100;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.btn-gradient:hover {
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+}
+
+/* ========================================
+   CARD STYLES
+   ======================================== */
+.card-hover {
+  @apply transition-all duration-300 ease-out;
+}
+
+.card-hover:hover {
+  @apply -translate-y-1;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card-hover:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.feature-card {
+  @apply relative p-6 rounded-2xl bg-card border transition-all duration-300;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.feature-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+}
+
+.dark .feature-card:hover {
+  box-shadow: 0 20px 40px rgba(129, 140, 248, 0.1);
+}
+
+.feature-card:hover::before {
+  opacity: 0.03;
+}
+
+.feature-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.feature-icon {
+  @apply w-12 h-12 rounded-xl flex items-center justify-center mb-4;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+}
+
+.dark .feature-icon {
+  background: linear-gradient(135deg, rgba(129, 140, 248, 0.15), rgba(167, 139, 250, 0.15));
+}
+
+/* ========================================
+   BADGE STYLES
+   ======================================== */
+.badge-gradient {
+  @apply px-4 py-1.5 rounded-full text-sm font-medium;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  color: var(--primary);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.dark .badge-gradient {
+  background: linear-gradient(135deg, rgba(129, 140, 248, 0.15), rgba(167, 139, 250, 0.15));
+  border-color: rgba(129, 140, 248, 0.3);
+}
+
+/* ========================================
+   CODE BLOCK STYLES
+   ======================================== */
+.code-block {
+  @apply relative rounded-xl overflow-hidden;
+  background: #1e1e2e;
+  border: 1px solid #313244;
+}
+
+.code-block pre {
+  @apply p-4 overflow-x-auto text-sm;
+  color: #cdd6f4;
+}
+
+.code-block code {
+  font-family: var(--font-mono), 'Fira Code', 'JetBrains Mono', monospace;
+}
+
+/* Syntax highlighting */
+.code-block .keyword { color: #cba6f7; }
+.code-block .string { color: #a6e3a1; }
+.code-block .function { color: #89b4fa; }
+.code-block .comment { color: #6c7086; }
+.code-block .variable { color: #f38ba8; }
+.code-block .number { color: #fab387; }
+
+/* ========================================
+   EDITOR DEMO STYLES (macOS-style window)
+   ======================================== */
+.editor-demo-wrapper {
+  @apply rounded-2xl overflow-hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15),
+              0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.dark .editor-demo-wrapper {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.editor-demo-header {
+  @apply flex items-center px-4 py-3 border-b;
+  background: linear-gradient(to bottom, var(--muted), var(--secondary));
+}
+
+.editor-demo-dot {
+  @apply w-3 h-3 rounded-full;
+}
+
+/* ========================================
+   HERO SECTION BACKGROUND
+   ======================================== */
+.hero-gradient {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.1), transparent),
+    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(168, 85, 247, 0.08), transparent);
+}
+
+.dark .hero-gradient {
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(129, 140, 248, 0.2), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(167, 139, 250, 0.15), transparent),
+    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(192, 132, 252, 0.1), transparent);
+}
+
+/* Grid pattern overlay */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+}
+
+.dark .hero-grid {
+  background-image: 
+    linear-gradient(rgba(129, 140, 248, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 140, 248, 0.05) 1px, transparent 1px);
+}
+
+/* ========================================
+   SECTION BACKGROUNDS
+   ======================================== */
+.section-gradient {
+  position: relative;
+}
+
+.section-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, var(--muted), transparent);
+  opacity: 0.5;
+}
+
+/* ========================================
+   TABLE STYLES
+   ======================================== */
+.comparison-table {
+  @apply w-full border-collapse;
+}
+
+.comparison-table th {
+  @apply p-4 text-left font-semibold bg-muted/50 border-b;
+}
+
+.comparison-table td {
+  @apply p-4 border-b;
+}
+
+.comparison-table tr:hover td {
+  @apply bg-muted/30;
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-fade-in-delay-1 { animation-delay: 0.1s; opacity: 0; }
+.animate-fade-in-delay-2 { animation-delay: 0.2s; opacity: 0; }
+.animate-fade-in-delay-3 { animation-delay: 0.3s; opacity: 0; }
+.animate-fade-in-delay-4 { animation-delay: 0.4s; opacity: 0; }
+
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
 }
 
 /* ========================================
    AUTHORLY EDITOR COLOR OVERRIDES
-   IMPORTANT: Only override CSS variables for colors
-   DO NOT add any structural/layout CSS here
-   Authorly's editor.css handles all layout/structure
    ======================================== */
 :root {
-  /* Override Authorly colors to match landing theme */
   --cb-primary: var(--primary);
   --cb-primary-hover: #4f46e5;
   --cb-bg: var(--background);
@@ -102,7 +531,6 @@ body {
 }
 
 .dark {
-  /* Dark mode color overrides */
   --cb-primary: var(--primary);
   --cb-primary-hover: #6366f1;
   --cb-bg: var(--background);
@@ -115,27 +543,17 @@ body {
 }
 
 /* ========================================
-   LANDING PAGE UTILITY CLASSES
-   Only for landing page UI components
+   UTILITY CLASSES
    ======================================== */
-
-/* Gradient text effect */
-.gradient-text {
-  background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.text-balance {
+  text-wrap: balance;
 }
 
-/* Editor demo window (macOS-style) */
-.editor-demo-wrapper {
-  @apply bg-card border rounded-xl shadow-2xl overflow-hidden;
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.editor-demo-header {
-  @apply flex items-center px-4 py-3 bg-muted/50 border-b;
-}
-
-.editor-demo-dot {
-  @apply w-3 h-3 rounded-full;
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

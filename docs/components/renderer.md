@@ -1,6 +1,8 @@
 # Renderer Component
 
-The `ContentBlocksRenderer` component displays HTML content created by the editor with beautiful, consistent styling. It's a **read-only** component designed for displaying published content.
+The `AuthorlyRenderer` component displays HTML content created by the editor with beautiful, consistent styling. It's a **read-only** component designed for displaying published content.
+
+> **Note:** `ContentBlocksRenderer` is a deprecated alias that still works for backwards compatibility.
 
 ## Overview
 
@@ -15,20 +17,20 @@ The Renderer is not just a wrapper around `dangerouslySetInnerHTML`. It provides
 ## Import
 
 ```tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
+import { AuthorlyRenderer } from 'authorly-editor';
 import 'authorly-editor/styles';
 ```
 
 ## Basic Usage
 
 ```tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
+import { AuthorlyRenderer } from 'authorly-editor';
 import 'authorly-editor/styles';
 
 export default function BlogPost({ content }: { content: string }) {
   return (
     <article>
-      <ContentBlocksRenderer html={content} />
+      <AuthorlyRenderer html={content} />
     </article>
   );
 }
@@ -54,7 +56,7 @@ export default function BlogPost({ content }: { content: string }) {
 Automatically adds a copy button to all code blocks:
 
 ```tsx
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={`<pre><code>console.log('Hello');</code></pre>`}
   enableCodeCopy={true}
 />
@@ -71,7 +73,7 @@ Automatically adds a copy button to all code blocks:
 Adds IDs to headings for deep linking:
 
 ```tsx
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={`<h2>Getting Started</h2>`}
   enableHeadingIds={true}
 />
@@ -92,7 +94,7 @@ This enables:
 Applies strikethrough to checked items:
 
 ```tsx
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={`
     <ul class="cb-checklist">
       <li class="cb-checked">
@@ -118,7 +120,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
       <h1>{post.title}</h1>
       <p className="text-gray-600">{post.date}</p>
       
-      <ContentBlocksRenderer
+      <AuthorlyRenderer
         html={post.content}
         enableCodeCopy={true}
         enableHeadingIds={true}
@@ -131,7 +133,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
 ### Documentation Page with TOC
 
 ```tsx
-import { ContentBlocksRenderer, TableOfContents } from 'authorly-editor';
+import { AuthorlyRenderer, AuthorlyTOC } from 'authorly-editor';
 
 export default function DocsPage({ content }: { content: string }) {
   return (
@@ -139,7 +141,7 @@ export default function DocsPage({ content }: { content: string }) {
       {/* Sticky Table of Contents */}
       <aside className="w-64 shrink-0">
         <div className="sticky top-4">
-          <TableOfContents
+          <AuthorlyTOC
             html={content}
             title="On this page"
             maxLevel={3}
@@ -149,7 +151,7 @@ export default function DocsPage({ content }: { content: string }) {
 
       {/* Main content */}
       <main className="flex-1 max-w-3xl">
-        <ContentBlocksRenderer
+        <AuthorlyRenderer
           html={content}
           enableHeadingIds={true}  // Required for TOC links to work
         />
@@ -165,7 +167,7 @@ export default function DocsPage({ content }: { content: string }) {
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ContentBlocksRenderer } from 'authorly-editor';
+import { AuthorlyRenderer } from 'authorly-editor';
 
 export default function Article({ content }: { content: string }) {
   const [darkMode, setDarkMode] = useState(false);
@@ -181,7 +183,7 @@ export default function Article({ content }: { content: string }) {
         {darkMode ? '☀️' : '🌙'}
       </button>
       
-      <ContentBlocksRenderer
+      <AuthorlyRenderer
         html={content}
         darkMode={darkMode}
       />
@@ -195,7 +197,7 @@ export default function Article({ content }: { content: string }) {
 ```tsx
 export default function StyledContent({ content }: { content: string }) {
   return (
-    <ContentBlocksRenderer
+    <AuthorlyRenderer
       html={content}
       className="prose prose-lg prose-slate max-w-none dark:prose-invert"
       style={{
@@ -281,7 +283,7 @@ function BlogPost({ content }: { content: string }) {
 ```tsx
 // Safe, enhanced, and styled
 function BlogPost({ content }: { content: string }) {
-  return <ContentBlocksRenderer html={content} />;
+  return <AuthorlyRenderer html={content} />;
 }
 ```
 
@@ -298,13 +300,13 @@ The Renderer works in both client and server components:
 
 ```tsx
 // app/blog/[slug]/page.tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
+import { AuthorlyRenderer } from 'authorly-editor';
 
 export default async function BlogPost({ params }: { params: { slug: string } }) {
   const post = await getPost(params.slug);
   
   return (
-    <ContentBlocksRenderer html={post.content} />
+    <AuthorlyRenderer html={post.content} />
   );
 }
 ```
@@ -333,17 +335,17 @@ The Renderer is optimized for performance:
 ## TypeScript
 
 ```tsx
-import type { ContentBlocksRendererProps } from 'authorly-editor';
+import type { AuthorlyRendererProps } from 'authorly-editor';
 
-const MyRenderer: React.FC<ContentBlocksRendererProps> = (props) => {
-  return <ContentBlocksRenderer {...props} />;
+const MyRenderer: React.FC<AuthorlyRendererProps> = (props) => {
+  return <AuthorlyRenderer {...props} />;
 };
 ```
 
 ## Combining with Tailwind's Typography Plugin
 
 ```tsx
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={content}
   className="prose prose-lg prose-slate max-w-none
              dark:prose-invert
@@ -359,7 +361,7 @@ const MyRenderer: React.FC<ContentBlocksRendererProps> = (props) => {
 The Renderer can display HTML from any source, not just the Authorly editor:
 
 ```tsx
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={`
     <h1>Welcome</h1>
     <p>This HTML came from anywhere!</p>

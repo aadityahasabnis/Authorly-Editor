@@ -1,13 +1,15 @@
-# ContentBlocksEditor Props
+# AuthorlyEditor Props
 
-Complete API reference for all props accepted by the `ContentBlocksEditor` component.
+Complete API reference for all props accepted by the `AuthorlyEditor` component.
 
 ## Import
 
 ```tsx
-import { ContentBlocksEditor } from 'authorly-editor';
-import type { ContentBlocksEditorProps } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
+import type { AuthorlyEditorProps } from 'authorly-editor';
 ```
+
+> **Note:** `ContentBlocksEditor` and `ContentBlocksEditorProps` are deprecated aliases that still work for backwards compatibility.
 
 ## Props Overview
 
@@ -16,7 +18,7 @@ import type { ContentBlocksEditorProps } from 'authorly-editor';
 | `initialContent` | `string` | `''` | Initial HTML content to load |
 | `blocks` | `BlockType[]` | All blocks | Enabled block types |
 | `inlineFormats` | `InlineFormat[]` | All formats | Enabled inline formats |
-| `placeholder` | `string` | `'Start writing...'` | Placeholder text when empty |
+| `placeholder` | `string` | `'Type "/" for commands...'` | Placeholder text when empty |
 | `readOnly` | `boolean` | `false` | Read-only mode (view only) |
 | `classPrefix` | `string` | `'cb'` | CSS class prefix |
 | `className` | `string` | `''` | Additional CSS class for container |
@@ -42,7 +44,7 @@ import type { ContentBlocksEditorProps } from 'authorly-editor';
 ### initialContent
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   initialContent="<p>Welcome to Authorly!</p><h2>Getting Started</h2>"
 />
 ```
@@ -57,14 +59,14 @@ Initial HTML content to populate the editor. Accepts any valid HTML.
 ```tsx
 // From state
 const [content, setContent] = useState('<p>Saved content</p>');
-<ContentBlocksEditor initialContent={content} />
+<AuthorlyEditor initialContent={content} />
 
 // From API
 const { data } = await fetch('/api/content');
-<ContentBlocksEditor initialContent={data.html} />
+<AuthorlyEditor initialContent={data.html} />
 
 // Complex content
-<ContentBlocksEditor 
+<AuthorlyEditor 
   initialContent={`
     <h1>My Document</h1>
     <p>Introduction paragraph</p>
@@ -79,7 +81,7 @@ const { data } = await fetch('/api/content');
 ### blocks
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   blocks={['paragraph', 'heading', 'bulletList', 'numberedList']}
 />
 ```
@@ -87,7 +89,7 @@ const { data } = await fetch('/api/content');
 Array of enabled block types. Restricts which blocks users can insert.
 
 **Type:** `BlockType[]`  
-**Default:** All 21 block types
+**Default:** All 16 block types
 
 **Available Block Types:**
 
@@ -115,12 +117,12 @@ type BlockType =
 
 ```tsx
 // Text-only editor
-<ContentBlocksEditor 
+<AuthorlyEditor 
   blocks={['paragraph', 'heading']}
 />
 
 // Minimal editor (no media)
-<ContentBlocksEditor 
+<AuthorlyEditor 
   blocks={[
     'paragraph',
     'heading',
@@ -132,7 +134,7 @@ type BlockType =
 />
 
 // Full-featured
-<ContentBlocksEditor 
+<AuthorlyEditor 
   blocks={undefined} // or omit - allows all blocks
 />
 ```
@@ -140,7 +142,7 @@ type BlockType =
 ### inlineFormats
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   inlineFormats={['bold', 'italic', 'link']}
 />
 ```
@@ -168,17 +170,17 @@ type InlineFormat =
 
 ```tsx
 // Basic formatting only
-<ContentBlocksEditor 
+<AuthorlyEditor 
   inlineFormats={['bold', 'italic', 'underline']}
 />
 
 // No formatting
-<ContentBlocksEditor 
+<AuthorlyEditor 
   inlineFormats={[]}
 />
 
 // Text decoration + links
-<ContentBlocksEditor 
+<AuthorlyEditor 
   inlineFormats={['bold', 'italic', 'link', 'highlight']}
 />
 ```
@@ -186,7 +188,7 @@ type InlineFormat =
 ### placeholder
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   placeholder="Share your thoughts..."
 />
 ```
@@ -194,21 +196,21 @@ type InlineFormat =
 Placeholder text shown when editor is empty.
 
 **Type:** `string`  
-**Default:** `'Start writing...'`
+**Default:** `'Type "/" for commands...'`
 
 **Examples:**
 
 ```tsx
 // Custom placeholder
-<ContentBlocksEditor placeholder="What's on your mind?" />
+<AuthorlyEditor placeholder="What's on your mind?" />
 
 // Descriptive placeholder
-<ContentBlocksEditor 
+<AuthorlyEditor 
   placeholder="Type / to insert a block, or start typing..."
 />
 
 // Empty (no placeholder)
-<ContentBlocksEditor placeholder="" />
+<AuthorlyEditor placeholder="" />
 ```
 
 ## Display Props
@@ -216,7 +218,7 @@ Placeholder text shown when editor is empty.
 ### readOnly
 
 ```tsx
-<ContentBlocksEditor readOnly={true} />
+<AuthorlyEditor readOnly={true} />
 ```
 
 Enables read-only mode. Content is visible but not editable.
@@ -229,19 +231,19 @@ Enables read-only mode. Content is visible but not editable.
 ```tsx
 // Conditionally read-only
 const [isEditing, setIsEditing] = useState(false);
-<ContentBlocksEditor readOnly={!isEditing} />
+<AuthorlyEditor readOnly={!isEditing} />
 
-// Always read-only (use ContentBlocksRenderer instead)
-<ContentBlocksEditor readOnly={true} initialContent={html} />
+// Always read-only (use AuthorlyRenderer instead)
+<AuthorlyEditor readOnly={true} initialContent={html} />
 
 // Better: Use renderer for read-only
-<ContentBlocksRenderer html={html} />
+<AuthorlyRenderer html={html} />
 ```
 
 ### className
 
 ```tsx
-<ContentBlocksEditor className="my-editor custom-styles" />
+<AuthorlyEditor className="my-editor custom-styles" />
 ```
 
 Additional CSS class names for the editor container.
@@ -253,19 +255,19 @@ Additional CSS class names for the editor container.
 
 ```tsx
 // Tailwind classes
-<ContentBlocksEditor className="border-2 border-blue-500 rounded-xl" />
+<AuthorlyEditor className="border-2 border-blue-500 rounded-xl" />
 
 // Custom class
-<ContentBlocksEditor className="my-custom-editor" />
+<AuthorlyEditor className="my-custom-editor" />
 
 // Multiple classes
-<ContentBlocksEditor className="editor-lg theme-ocean shadow-xl" />
+<AuthorlyEditor className="editor-lg theme-ocean shadow-xl" />
 ```
 
 ### style
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   style={{ 
     maxWidth: '800px', 
     margin: '0 auto',
@@ -283,12 +285,12 @@ Inline CSS styles for the editor container.
 
 ```tsx
 // Fixed dimensions
-<ContentBlocksEditor 
+<AuthorlyEditor 
   style={{ width: '100%', height: '600px' }}
 />
 
 // Custom colors
-<ContentBlocksEditor 
+<AuthorlyEditor 
   style={{ 
     backgroundColor: '#f9fafb',
     border: '2px solid #e5e7eb'
@@ -296,7 +298,7 @@ Inline CSS styles for the editor container.
 />
 
 // Responsive height
-<ContentBlocksEditor 
+<AuthorlyEditor 
   style={{ 
     minHeight: '300px',
     maxHeight: '80vh'
@@ -307,7 +309,7 @@ Inline CSS styles for the editor container.
 ### classPrefix
 
 ```tsx
-<ContentBlocksEditor classPrefix="my-editor" />
+<AuthorlyEditor classPrefix="my-editor" />
 ```
 
 Prefix for all CSS classes. Useful for avoiding class name conflicts.
@@ -319,15 +321,15 @@ Prefix for all CSS classes. Useful for avoiding class name conflicts.
 
 ```tsx
 // Custom prefix
-<ContentBlocksEditor classPrefix="ae" />
+<AuthorlyEditor classPrefix="ae" />
 // Generates: .ae-editor, .ae-content, .ae-block, etc.
 
 // No prefix
-<ContentBlocksEditor classPrefix="" />
+<AuthorlyEditor classPrefix="" />
 // Generates: .editor, .content, .block, etc.
 
 // Namespace
-<ContentBlocksEditor classPrefix="app-editor" />
+<AuthorlyEditor classPrefix="app-editor" />
 // Generates: .app-editor-editor, .app-editor-content, etc.
 ```
 
@@ -336,7 +338,7 @@ Prefix for all CSS classes. Useful for avoiding class name conflicts.
 ### showToolbar
 
 ```tsx
-<ContentBlocksEditor showToolbar={false} />
+<AuthorlyEditor showToolbar={false} />
 ```
 
 Show or hide the toolbar.
@@ -348,17 +350,17 @@ Show or hide the toolbar.
 
 ```tsx
 // No toolbar
-<ContentBlocksEditor showToolbar={false} />
+<AuthorlyEditor showToolbar={false} />
 
 // Conditional toolbar
 const [showToolbar, setShowToolbar] = useState(true);
-<ContentBlocksEditor showToolbar={showToolbar} />
+<AuthorlyEditor showToolbar={showToolbar} />
 ```
 
 ### toolbarPosition
 
 ```tsx
-<ContentBlocksEditor toolbarPosition="bottom" />
+<AuthorlyEditor toolbarPosition="bottom" />
 ```
 
 Position of the toolbar relative to content.
@@ -370,13 +372,13 @@ Position of the toolbar relative to content.
 
 ```tsx
 // Bottom toolbar
-<ContentBlocksEditor toolbarPosition="bottom" />
+<AuthorlyEditor toolbarPosition="bottom" />
 
 // Top toolbar (default)
-<ContentBlocksEditor toolbarPosition="top" />
+<AuthorlyEditor toolbarPosition="top" />
 
-// Floating toolbar (future feature)
-<ContentBlocksEditor toolbarPosition="floating" />
+// Floating toolbar
+<AuthorlyEditor toolbarPosition="floating" />
 ```
 
 ## Theme Props
@@ -384,7 +386,7 @@ Position of the toolbar relative to content.
 ### darkMode
 
 ```tsx
-<ContentBlocksEditor darkMode={true} />
+<AuthorlyEditor darkMode={true} />
 ```
 
 Enable dark mode styling.
@@ -399,12 +401,12 @@ Enable dark mode styling.
 const [isDark, setIsDark] = useState(false);
 
 <div className={isDark ? 'cb-dark' : ''}>
-  <ContentBlocksEditor darkMode={isDark} />
+  <AuthorlyEditor darkMode={isDark} />
 </div>
 
 // System preference
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-<ContentBlocksEditor darkMode={prefersDark} />
+<AuthorlyEditor darkMode={prefersDark} />
 ```
 
 ## Behavior Props
@@ -412,7 +414,7 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 ### autoFocus
 
 ```tsx
-<ContentBlocksEditor autoFocus={true} />
+<AuthorlyEditor autoFocus={true} />
 ```
 
 Automatically focus the editor when it mounts.
@@ -425,17 +427,17 @@ Automatically focus the editor when it mounts.
 ```tsx
 // Auto-focus in modal
 <Modal isOpen={isOpen}>
-  <ContentBlocksEditor autoFocus={true} />
+  <AuthorlyEditor autoFocus={true} />
 </Modal>
 
 // Focus on mount
-<ContentBlocksEditor autoFocus={true} />
+<AuthorlyEditor autoFocus={true} />
 ```
 
 ### spellCheck
 
 ```tsx
-<ContentBlocksEditor spellCheck={false} />
+<AuthorlyEditor spellCheck={false} />
 ```
 
 Enable or disable browser spell checking.
@@ -447,10 +449,10 @@ Enable or disable browser spell checking.
 
 ```tsx
 // Disable spell check (for code)
-<ContentBlocksEditor spellCheck={false} />
+<AuthorlyEditor spellCheck={false} />
 
 // Enable spell check
-<ContentBlocksEditor spellCheck={true} />
+<AuthorlyEditor spellCheck={true} />
 ```
 
 ## Event Callbacks
@@ -458,7 +460,7 @@ Enable or disable browser spell checking.
 ### onChange
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onChange={(html) => {
     console.log('Content changed:', html);
     saveToLocalStorage(html);
@@ -477,7 +479,7 @@ Called whenever editor content changes.
 // Auto-save
 const [content, setContent] = useState('');
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onChange={(html) => {
     setContent(html);
     debouncedSave(html);
@@ -487,14 +489,14 @@ const [content, setContent] = useState('');
 // Track changes
 const [changeCount, setChangeCount] = useState(0);
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onChange={(html) => {
     setChangeCount(c => c + 1);
   }}
 />
 
 // Sync with state
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onChange={setContent}
 />
 ```
@@ -502,7 +504,7 @@ const [changeCount, setChangeCount] = useState(0);
 ### onSave
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onSave={async (html) => {
     await fetch('/api/save', {
       method: 'POST',
@@ -521,7 +523,7 @@ Called when user presses `Ctrl+S` (or `Cmd+S` on Mac).
 
 ```tsx
 // Save to API
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onSave={async (html) => {
     const response = await saveContent(html);
     toast.success('Saved!');
@@ -529,7 +531,7 @@ Called when user presses `Ctrl+S` (or `Cmd+S` on Mac).
 />
 
 // Save to localStorage
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onSave={(html) => {
     localStorage.setItem('draft', html);
   }}
@@ -539,7 +541,7 @@ Called when user presses `Ctrl+S` (or `Cmd+S` on Mac).
 ### onFocus / onBlur
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onFocus={() => console.log('Editor focused')}
   onBlur={() => console.log('Editor blurred')}
 />
@@ -556,13 +558,13 @@ Called when editor gains or loses focus.
 // Track editing state
 const [isEditing, setIsEditing] = useState(false);
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onFocus={() => setIsEditing(true)}
   onBlur={() => setIsEditing(false)}
 />
 
 // Show save prompt on blur
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onBlur={() => {
     if (hasUnsavedChanges) {
       showSavePrompt();
@@ -574,7 +576,7 @@ const [isEditing, setIsEditing] = useState(false);
 ### onReady
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onReady={(editor) => {
     console.log('Editor ready!', editor);
     editor.focus();
@@ -593,12 +595,12 @@ Called when editor is fully initialized and ready to use.
 // Store editor instance
 const [editor, setEditor] = useState<EditorInstance | null>(null);
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onReady={setEditor}
 />
 
 // Execute commands on ready
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onReady={(editor) => {
     editor.focus();
     editor.insertBlock('heading', { level: 1 });
@@ -611,7 +613,7 @@ const [editor, setEditor] = useState<EditorInstance | null>(null);
 ### onUploadStart
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onUploadStart={(filename) => {
     console.log(`Uploading ${filename}...`);
     setUploading(true);
@@ -627,7 +629,7 @@ Called when an image upload begins.
 ### onUploadSuccess
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onUploadSuccess={(result) => {
     console.log('Upload complete:', result.url);
     toast.success('Image uploaded!');
@@ -643,7 +645,7 @@ Called when an upload completes successfully.
 ### onUploadError
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onUploadError={(error) => {
     console.error('Upload failed:', error);
     toast.error(error.message);
@@ -659,7 +661,7 @@ Called when an upload fails.
 ### onUploadProgress
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onUploadProgress={(progress) => {
     console.log(`${progress.percent}% uploaded`);
     setUploadProgress(progress.percent);
@@ -676,5 +678,5 @@ Called with upload progress updates.
 
 - [EditorRef API](/docs/api/editor-ref) - Methods available on editor ref
 - [Events API](/docs/api/events) - Event handling details
-- [ContentBlocksEditor](/docs/components/editor) - Component documentation
+- [AuthorlyEditor](/docs/components/editor) - Component documentation
 - [Quick Start](/docs/quick-start) - Getting started guide

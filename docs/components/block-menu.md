@@ -1,6 +1,6 @@
 # BlockMenu
 
-The `BlockMenu` component is a powerful slash command menu that appears when you type `/` in the editor. It provides quick access to all 21 block types with fuzzy search and keyboard navigation.
+The `BlockMenu` component is a powerful slash command menu that appears when you type `/` in the editor. It provides quick access to all 16 block types with fuzzy search and keyboard navigation.
 
 ## Features
 
@@ -9,7 +9,7 @@ The `BlockMenu` component is a powerful slash command menu that appears when you
 - Keyboard navigation (↑↓ arrows)
 - Mouse hover selection
 - Auto-scrolling to keep selected item visible
-- 17 block types available (paragraph, headings, lists, media, etc.)
+- 16 block types available (paragraph, headings, lists, media, etc.)
 - Automatic positioning to stay in viewport
 - Click-outside to close
 
@@ -30,17 +30,17 @@ import { BlockMenu } from 'authorly-editor';
 
 ## Usage
 
-The BlockMenu is typically managed internally by the ContentBlocksEditor. You don't need to use it directly unless building a custom editor implementation.
+The BlockMenu is typically managed internally by the AuthorlyEditor. You don't need to use it directly unless building a custom editor implementation.
 
 ### Internal Usage (Automatic)
 
 ```tsx
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 
 // The editor handles the BlockMenu automatically
 // Just type '/' in the editor to trigger it
 function MyEditor() {
-  return <ContentBlocksEditor placeholder="Type / for commands" />;
+  return <AuthorlyEditor placeholder="Type / for commands" />;
 }
 ```
 
@@ -373,7 +373,7 @@ const customItems = [
 
 ## Integration with Editor
 
-The ContentBlocksEditor automatically manages the BlockMenu:
+The AuthorlyEditor automatically manages the BlockMenu:
 
 ```tsx
 // Inside Editor.tsx (simplified)
@@ -433,7 +433,7 @@ Some menu items insert inline (like Date) instead of as blocks:
 
 ## See Also
 
-- [ContentBlocksEditor](/docs/components/editor) - Main editor component
+- [AuthorlyEditor](/docs/components/editor) - Main editor component
 - [Toolbar](/docs/components/toolbar) - Alternative way to insert blocks
 - [Block Types](/docs/blocks/paragraph) - Documentation for all block types
 - [Keyboard Shortcuts](/docs/guides/shortcuts) - Full shortcut reference

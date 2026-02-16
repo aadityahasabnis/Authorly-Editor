@@ -4,10 +4,10 @@ Guide to all event callbacks available in Authorly editor. Events allow you to r
 
 ## Event Callbacks
 
-All event callbacks are passed as props to `ContentBlocksEditor`.
+All event callbacks are passed as props to `AuthorlyEditor`.
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onChange={(html) => console.log('Changed')}
   onSave={(html) => console.log('Saved')}
   onFocus={() => console.log('Focused')}
@@ -41,7 +41,7 @@ onChange?: (html: string) => void
 
 ```tsx
 // Auto-save draft
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onChange={(html) => {
     localStorage.setItem('draft', html);
   }}
@@ -50,7 +50,7 @@ onChange?: (html: string) => void
 // Track changes
 const [changeCount, setChangeCount] = useState(0);
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onChange={(html) => {
     setChangeCount(c => c + 1);
     console.log(`Changes: ${changeCount}`);
@@ -65,7 +65,7 @@ const debouncedSave = useDebounce(() => {
   saveToAPI(content);
 }, 1000);
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onChange={(html) => {
     setContent(html);
     debouncedSave();
@@ -73,7 +73,7 @@ const debouncedSave = useDebounce(() => {
 />
 
 // Validate content
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onChange={(html) => {
     const text = html.replace(/<[^>]*>/g, '');
     const wordCount = text.split(/\s+/).length;
@@ -106,7 +106,7 @@ onSave?: (html: string) => void
 
 ```tsx
 // Save to API
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onSave={async (html) => {
     try {
       await fetch('/api/save', {
@@ -122,7 +122,7 @@ onSave?: (html: string) => void
 />
 
 // Save to localStorage
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onSave={(html) => {
     localStorage.setItem('document', html);
     console.log('Saved to localStorage');
@@ -130,7 +130,7 @@ onSave?: (html: string) => void
 />
 
 // Multi-step save
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onSave={async (html) => {
     // Show loading
     setIsSaving(true);
@@ -174,7 +174,7 @@ onFocus?: () => void
 // Track editing state
 const [isEditing, setIsEditing] = useState(false);
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onFocus={() => setIsEditing(true)}
   onBlur={() => setIsEditing(false)}
 />
@@ -184,13 +184,13 @@ const [isEditing, setIsEditing] = useState(false);
 // Show toolbar on focus
 const [showToolbar, setShowToolbar] = useState(false);
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   showToolbar={showToolbar}
   onFocus={() => setShowToolbar(true)}
 />
 
 // Log analytics
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onFocus={() => {
     analytics.track('Editor Focused', {
       timestamp: new Date().toISOString(),
@@ -217,7 +217,7 @@ onBlur?: () => void
 
 ```tsx
 // Auto-save on blur
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onBlur={() => {
     const html = editorRef.current?.getHTML();
     if (html) {
@@ -229,7 +229,7 @@ onBlur?: () => void
 // Prompt to save changes
 const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onChange={() => setHasUnsavedChanges(true)}
   onBlur={() => {
     if (hasUnsavedChanges) {
@@ -242,7 +242,7 @@ const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 />
 
 // Hide UI on blur
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onBlur={() => {
     setShowFormatting(false);
     setShowToolbar(false);
@@ -275,12 +275,12 @@ onReady?: (editor: EditorInstance) => void
 // Store editor instance
 const [editor, setEditor] = useState<EditorInstance | null>(null);
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onReady={setEditor}
 />
 
 // Execute commands on ready
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onReady={(editor) => {
     // Focus editor
     editor.focus();
@@ -294,7 +294,7 @@ const [editor, setEditor] = useState<EditorInstance | null>(null);
 />
 
 // Initialize custom features
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onReady={(editor) => {
     // Setup custom event listeners
     editor.container.addEventListener('paste', handlePaste);
@@ -324,7 +324,7 @@ onUploadStart?: (filename: string) => void
 **Examples:**
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onUploadStart={(filename) => {
     console.log(`Uploading ${filename}...`);
     setIsUploading(true);
@@ -358,7 +358,7 @@ interface UploadResult {
 **Examples:**
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onUploadSuccess={(result) => {
     console.log('Upload complete:', result.url);
     toast.success('Image uploaded!');
@@ -388,7 +388,7 @@ onUploadError?: (error: Error) => void
 **Examples:**
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onUploadError={(error) => {
     console.error('Upload failed:', error);
     toast.error(error.message);
@@ -429,7 +429,7 @@ interface UploadProgress {
 ```tsx
 const [uploadProgress, setUploadProgress] = useState(0);
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onUploadProgress={(progress) => {
     setUploadProgress(progress.percent);
     console.log(`${progress.percent}% uploaded`);
@@ -447,7 +447,7 @@ const [uploadProgress, setUploadProgress] = useState(0);
 
 ```tsx
 import { useState, useRef } from 'react';
-import { ContentBlocksEditor, EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, EditorRef } from 'authorly-editor';
 
 function FullEditor() {
   const editorRef = useRef<EditorRef>(null);
@@ -469,7 +469,7 @@ function FullEditor() {
       </div>
 
       {/* Editor */}
-      <ContentBlocksEditor 
+      <AuthorlyEditor 
         ref={editorRef}
         
         // Content events
@@ -575,7 +575,7 @@ Understanding when events fire in relation to each other:
 ## Debugging Events
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   onChange={(html) => {
     console.log('onChange:', html.substring(0, 100));
   }}
@@ -594,5 +594,5 @@ Understanding when events fire in relation to each other:
 
 - [Editor Props](/docs/api/editor-props) - All props reference
 - [EditorRef API](/docs/api/editor-ref) - Methods reference
-- [ContentBlocksEditor](/docs/components/editor) - Component documentation
+- [AuthorlyEditor](/docs/components/editor) - Component documentation
 - [Quick Start](/docs/quick-start) - Getting started guide

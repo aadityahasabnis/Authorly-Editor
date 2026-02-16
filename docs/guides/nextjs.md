@@ -31,16 +31,16 @@ Create a client component wrapper:
 // components/editor-wrapper.tsx
 'use client';
 
-import { ContentBlocksEditor } from 'authorly-editor';
-import 'authorly-editor/dist/style.css';
+import { AuthorlyEditor } from 'authorly-editor';
+import 'authorly-editor/styles';
 import { useState } from 'react';
 
 export default function EditorWrapper() {
   const [content, setContent] = useState('');
 
   return (
-    <ContentBlocksEditor
-      value={content}
+    <AuthorlyEditor
+      initialContent={content}
       onChange={setContent}
       placeholder="Start writing..."
     />
@@ -78,13 +78,13 @@ The editor must run as a Client Component. Mark it with `'use client'`:
 ```tsx
 'use client';
 
-import { ContentBlocksEditor } from 'authorly-editor';
-import 'authorly-editor/dist/style.css';
+import { AuthorlyEditor } from 'authorly-editor';
+import 'authorly-editor/styles';
 
 export default function Editor() {
   const [content, setContent] = useState('');
   
-  return <ContentBlocksEditor value={content} onChange={setContent} />;
+  return <AuthorlyEditor initialContent={content} onChange={setContent} />;
 }
 ```
 
@@ -119,8 +119,8 @@ export default function WritePage() {
 // components/persistent-editor.tsx
 'use client';
 
-import { ContentBlocksEditor } from 'authorly-editor';
-import 'authorly-editor/dist/style.css';
+import { AuthorlyEditor } from 'authorly-editor';
+import 'authorly-editor/styles';
 import { useState, useEffect } from 'react';
 
 export default function PersistentEditor({ postId }: { postId?: string }) {
@@ -163,8 +163,8 @@ export default function PersistentEditor({ postId }: { postId?: string }) {
   return (
     <div>
       {isSaving && <div className="text-sm text-gray-500">Saving...</div>}
-      <ContentBlocksEditor
-        value={content}
+      <AuthorlyEditor
+        initialContent={content}
         onChange={setContent}
         placeholder="Start writing..."
       />
@@ -354,14 +354,14 @@ export default async function handler(
 }
 ```
 
-## Rendering Content (ContentBlocksRenderer)
+## Rendering Content (AuthorlyRenderer)
 
 The renderer works with both SSR and SSG:
 
 ```tsx
 // components/article.tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
-import 'authorly-editor/dist/style.css';
+import { AuthorlyRenderer } from 'authorly-editor';
+import 'authorly-editor/styles';
 
 interface Props {
   content: string;
@@ -370,7 +370,7 @@ interface Props {
 export default function Article({ content }: Props) {
   return (
     <article>
-      <ContentBlocksRenderer content={content} />
+      <AuthorlyRenderer html={content} />
     </article>
   );
 }
@@ -380,8 +380,8 @@ Server-side rendering (App Router):
 
 ```tsx
 // app/posts/[slug]/page.tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
-import 'authorly-editor/dist/style.css';
+import { AuthorlyRenderer } from 'authorly-editor';
+import 'authorly-editor/styles';
 
 async function getPost(slug: string) {
   // Fetch from database
@@ -401,7 +401,7 @@ export default async function PostPage({
   return (
     <article>
       <h1>{post.title}</h1>
-      <ContentBlocksRenderer content={post.content} />
+      <AuthorlyRenderer html={post.content} />
     </article>
   );
 }
@@ -413,8 +413,8 @@ export default async function PostPage({
 // components/themed-editor.tsx
 'use client';
 
-import { ContentBlocksEditor } from 'authorly-editor';
-import 'authorly-editor/dist/style.css';
+import { AuthorlyEditor } from 'authorly-editor';
+import 'authorly-editor/styles';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
 
@@ -434,8 +434,8 @@ export default function ThemedEditor() {
 
   return (
     <div className={theme === 'dark' ? 'cb-dark' : ''}>
-      <ContentBlocksEditor
-        value={content}
+      <AuthorlyEditor
+        initialContent={content}
         onChange={setContent}
         darkMode={theme === 'dark'}
       />
@@ -503,29 +503,35 @@ Configure the editor:
 ```tsx
 'use client';
 
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor, createCustomUploadConfig } from 'authorly-editor';
 
 export default function Editor() {
   const [content, setContent] = useState('');
 
+  const uploadConfig = createCustomUploadConfig(async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    const data = await res.json();
+    return {
+      url: data.url,
+      width: data.width || 0,
+      height: data.height || 0,
+      format: file.type.split('/')[1],
+      size: file.size,
+    };
+  });
+
   return (
-    <ContentBlocksEditor
-      value={content}
+    <AuthorlyEditor
+      initialContent={content}
       onChange={setContent}
-      imageUploadConfig={{
-        handler: async (file) => {
-          const formData = new FormData();
-          formData.append('file', file);
-          
-          const res = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-          });
-          
-          const data = await res.json();
-          return { url: data.url };
-        },
-      }}
+      imageUploadConfig={uploadConfig}
     />
   );
 }
@@ -630,7 +636,7 @@ useEffect(() => {
 
 if (!mounted) return null;
 
-return <ContentBlocksEditor />;
+return <AuthorlyEditor />;
 ```
 
 ### Styles Not Loading
@@ -640,7 +646,7 @@ return <ContentBlocksEditor />;
 **Solution:** Import CSS in the component or `_app.tsx`
 
 ```tsx
-import 'authorly-editor/dist/style.css';
+import 'authorly-editor/styles';
 ```
 
 ### Slow Initial Load
@@ -651,7 +657,7 @@ import 'authorly-editor/dist/style.css';
 
 ```tsx
 const Editor = dynamic(
-  () => import('authorly-editor').then(mod => mod.ContentBlocksEditor),
+  () => import('authorly-editor').then(mod => mod.AuthorlyEditor),
   { ssr: false }
 );
 ```
@@ -679,18 +685,18 @@ function EditorPage() {
 'use client';
 
 import { memo, useCallback } from 'react';
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 
 const MemoizedEditor = memo(function Editor({ 
-  value, 
+  initialContent, 
   onChange 
 }: { 
-  value: string; 
+  initialContent: string; 
   onChange: (html: string) => void; 
 }) {
   return (
-    <ContentBlocksEditor
-      value={value}
+    <AuthorlyEditor
+      initialContent={initialContent}
       onChange={onChange}
     />
   );
@@ -703,7 +709,7 @@ export default function EditorPage() {
     setContent(html);
   }, []);
 
-  return <MemoizedEditor value={content} onChange={handleChange} />;
+  return <MemoizedEditor initialContent={content} onChange={handleChange} />;
 }
 ```
 
@@ -730,7 +736,7 @@ function Editor() {
     debouncedSave(html);
   }
 
-  return <ContentBlocksEditor value={content} onChange={handleChange} />;
+  return <AuthorlyEditor initialContent={content} onChange={handleChange} />;
 }
 ```
 

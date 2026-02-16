@@ -125,13 +125,13 @@ function getUser(id: number): Promise<User> {
 Enable line numbers for easier reference:
 
 ```tsx
-// In ContentBlocksEditor
-<ContentBlocksEditor
+// In AuthorlyEditor
+<AuthorlyEditor
   showLineNumbers={true}  // Enable line numbers
 />
 
-// In ContentBlocksRenderer  
-<ContentBlocksRenderer
+// In AuthorlyRenderer  
+<AuthorlyRenderer
   html={content}
   showLineNumbers={true}
 />
@@ -157,7 +157,7 @@ Every code block includes a copy button:
 
 ```tsx
 // Enable copy functionality in renderer
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={content}
   enableCodeCopy={true}  // Default: true
 />
@@ -312,14 +312,14 @@ pnpm add authorly-editor
 
 ````
 ```tsx:components/MyEditor.tsx
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 import 'authorly-editor/styles';
 
 export function MyEditor() {
   const [content, setContent] = useState('<p>Hello!</p>');
   
   return (
-    <ContentBlocksEditor
+    <AuthorlyEditor
       initialContent={content}
       onChange={setContent}
       darkMode={false}
@@ -625,7 +625,7 @@ For very large code blocks (>1000 lines):
 - Disable line numbers if not needed
 
 ```tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   maxCodeBlockLines={500}  // Warn on large blocks
   lazyHighlight={true}     // Highlight on scroll
 />
@@ -635,7 +635,7 @@ For very large code blocks (>1000 lines):
 
 ```tsx
 // Only highlight visible code blocks
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={content}
   lazyHighlight={true}
   highlightDelay={100}

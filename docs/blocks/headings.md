@@ -230,7 +230,7 @@ The ID is created by:
 Make sure heading IDs are enabled in the renderer:
 
 ```tsx
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={content}
   enableHeadingIds={true}  // Default: true
 />
@@ -587,12 +587,12 @@ Make headings understandable without surrounding context:
 
 Headings power automatic table of contents:
 
-### Using TableOfContents Component
+### Using AuthorlyTOC Component
 
 ```tsx
-import { TableOfContents } from 'authorly-editor';
+import { AuthorlyTOC } from 'authorly-editor';
 
-<TableOfContents 
+<AuthorlyTOC 
   html={content}
   maxLevel={3}  // Show H2 and H3 only
   title="On this page"

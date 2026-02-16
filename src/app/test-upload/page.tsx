@@ -17,7 +17,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Editor from '@/components/Editor';
-import type { UploadConfig, UploadResult, UploadProgress } from '@/types/upload';
+import type { UploadConfig, UploadResult, UploadProgress } from 'authorly-editor';
 
 // Note: Config object created manually to avoid importing from authorly-editor
 // until v0.1.9 is published with upload support
@@ -232,9 +232,9 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your-preset
                   onChange={setContent}
                   placeholder="Type /image to insert an image..."
                   imageUploadConfig={uploadConfig}
-                  onUploadStart={(file) => {
+                  onUploadStart={(filename: string) => {
                     setUploadStatus('uploading');
-                    setUploadMessage(`Uploading ${file.name}...`);
+                    setUploadMessage(`Uploading ${filename}...`);
                     setUploadProgress(0);
                   }}
                   onUploadProgress={(progress: UploadProgress) => {

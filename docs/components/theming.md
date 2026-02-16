@@ -7,13 +7,13 @@ Authorly uses CSS custom properties (CSS variables) for theming, making it easy 
 ### Import Styles
 
 ```tsx
-import 'authorly-editor/dist/style.css';
+import 'authorly-editor/styles';
 ```
 
 This imports all necessary styles including:
 - Editor container and content area
 - Toolbar and block menu
-- All 21 block types
+- All 16 block types
 - Dark mode support
 - Custom scrollbars
 
@@ -21,14 +21,14 @@ This imports all necessary styles including:
 
 ```tsx
 import { useState } from 'react';
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 
 function ThemedEditor() {
   const [isDark, setIsDark] = useState(false);
 
   return (
     <div className={isDark ? 'cb-dark' : ''}>
-      <ContentBlocksEditor darkMode={isDark} />
+      <AuthorlyEditor darkMode={isDark} />
     </div>
   );
 }
@@ -444,7 +444,7 @@ Authorly uses CSS variables for all theme values. Override these in your own CSS
 Authorly works seamlessly with Tailwind:
 
 ```tsx
-<ContentBlocksEditor 
+<AuthorlyEditor 
   className="border-2 border-blue-500 rounded-xl shadow-xl"
 />
 ```
@@ -591,6 +591,6 @@ Then use in your CSS:
 
 ## See Also
 
-- [ContentBlocksEditor](/docs/components/editor) - Editor component
+- [AuthorlyEditor](/docs/components/editor) - Editor component
 - [Styling Guide](/docs/guides/styling) - Advanced styling techniques
 - [Quick Start](/docs/quick-start) - Getting started guide

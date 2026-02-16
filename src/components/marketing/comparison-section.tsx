@@ -92,7 +92,7 @@ export function ComparisonSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/30 to-background" />
       <div className="absolute inset-0 grid-pattern opacity-30" />
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <motion.div

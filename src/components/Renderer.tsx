@@ -3,8 +3,8 @@
 import dynamic from 'next/dynamic';
 
 // Dynamically import the renderer to avoid SSR issues
-const ContentBlocksRenderer = dynamic(
-  () => import('authorly-editor').then((mod) => mod.ContentBlocksRenderer),
+const AuthorlyRenderer = dynamic(
+  () => import('authorly-editor').then((mod) => mod.AuthorlyRenderer),
   { 
     ssr: false,
     loading: () => (
@@ -25,5 +25,5 @@ interface RendererProps {
 }
 
 export default function Renderer(props: RendererProps) {
-  return <ContentBlocksRenderer {...props} />;
+  return <AuthorlyRenderer {...props} />;
 }

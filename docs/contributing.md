@@ -255,7 +255,7 @@ export function Editor(props) {
 
 ### Naming Conventions
 
-- **Components**: PascalCase (`ContentBlocksEditor`, `Toolbar`)
+- **Components**: PascalCase (`AuthorlyEditor`, `Toolbar`)
 - **Functions**: camelCase (`handleClick`, `formatText`)
 - **Constants**: UPPER_SNAKE_CASE (`MAX_ITEMS`, `DEFAULT_CONFIG`)
 - **Types/Interfaces**: PascalCase (`EditorProps`, `BlockType`)

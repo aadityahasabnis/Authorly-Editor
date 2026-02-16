@@ -32,7 +32,7 @@ Not directly available in toolbar. Use slash command or programmatic insertion.
 
 ```tsx
 import { useRef } from 'react';
-import { ContentBlocksEditor, EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, EditorRef } from 'authorly-editor';
 
 function MyEditor() {
   const editorRef = useRef<EditorRef>(null);
@@ -46,7 +46,7 @@ function MyEditor() {
   return (
     <>
       <button onClick={insertLinkPreview}>Add Link Preview</button>
-      <ContentBlocksEditor ref={editorRef} />
+      <AuthorlyEditor ref={editorRef} />
     </>
   );
 }
@@ -360,7 +360,7 @@ function ResourcesEditor() {
   return (
     <div>
       <h2>Resources</h2>
-      <ContentBlocksEditor
+      <AuthorlyEditor
         initialContent={resources.map(r => ({
           type: 'linkPreview',
           url: r.url,
@@ -483,4 +483,4 @@ getFaviconUrl('https://github.com');
 - [Link Formatting](/docs/blocks/paragraph) - Inline links within text
 - [Video Block](/docs/blocks/video) - Embed videos
 - [Image Block](/docs/blocks/image) - Embed images
-- [ContentBlocksEditor](/docs/components/editor) - Editor component
+- [AuthorlyEditor](/docs/components/editor) - Editor component

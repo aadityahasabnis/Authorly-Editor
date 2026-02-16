@@ -280,7 +280,7 @@ onChange={(html) => save(html)}
 > load time for pages with many images.
 
 \`\`\`tsx
-<ContentBlocksRenderer
+<AuthorlyRenderer
   html={content}
   lazyLoadImages={true}
 />

@@ -54,14 +54,14 @@ export function ComponentsOverview() {
   const components = [
     {
       title: 'Editor',
-      description: 'The main ContentBlocksEditor component for creating and editing rich content.',
+      description: 'The main AuthorlyEditor component for creating and editing rich content.',
       href: '/docs/components/editor',
       icon: <Edit3 className="w-7 h-7" />,
       gradient: 'from-blue-500 to-indigo-500'
     },
     {
       title: 'Renderer',
-      description: 'ContentBlocksRenderer component for displaying saved HTML content beautifully.',
+      description: 'AuthorlyRenderer component for displaying saved HTML content beautifully.',
       href: '/docs/components/renderer',
       icon: <Eye className="w-7 h-7" />,
       gradient: 'from-green-500 to-teal-500'

@@ -31,7 +31,7 @@ const examples = [
     tags: ['Cloudinary', 'S3', 'New'],
     gradient: 'from-emerald-500 to-cyan-500',
     href: '/test-upload',
-    code: `import { ContentBlocksEditor, createCloudinaryConfig } from 'authorly-editor';
+    code: `import { AuthorlyEditor, createCloudinaryConfig } from 'authorly-editor';
 
 const uploadConfig = createCloudinaryConfig({
   cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -42,7 +42,7 @@ const uploadConfig = createCloudinaryConfig({
 
 function Editor() {
   return (
-    <ContentBlocksEditor
+    <AuthorlyEditor
       imageUploadConfig={uploadConfig}
       onUploadSuccess={(result) => {
         console.log('Uploaded:', result.url);
@@ -61,7 +61,7 @@ function Editor() {
     tags: ['React', 'Full Example'],
     gradient: 'from-blue-500 to-cyan-500',
     href: '/playground',
-    code: `import { ContentBlocksEditor } from 'authorly-editor';
+    code: `import { AuthorlyEditor } from 'authorly-editor';
 
 function BlogEditor() {
   const [title, setTitle] = useState('');
@@ -78,7 +78,7 @@ function BlogEditor() {
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Post title..."
       />
-      <ContentBlocksEditor
+      <AuthorlyEditor
         initialContent={content}
         onChange={setContent}
         onSave={handleSave}
@@ -94,16 +94,16 @@ function BlogEditor() {
     tags: ['Next.js', 'SSG'],
     gradient: 'from-purple-500 to-pink-500',
     href: '/playground',
-    code: `import { ContentBlocksRenderer, TableOfContents } from 'authorly-editor';
+    code: `import { AuthorlyRenderer, AuthorlyTOC } from 'authorly-editor';
 
 function DocsPage({ content }) {
   return (
     <div className="flex">
       <aside className="w-64">
-        <TableOfContents html={content} />
+        <AuthorlyTOC html={content} />
       </aside>
       <main>
-        <ContentBlocksRenderer 
+        <AuthorlyRenderer 
           html={content}
           enableHeadingIds
         />
@@ -119,7 +119,7 @@ function DocsPage({ content }) {
     tags: ['Mobile', 'Responsive'],
     gradient: 'from-emerald-500 to-teal-500',
     href: '/playground',
-    code: `<ContentBlocksEditor
+    code: `<AuthorlyEditor
   showToolbar={true}
   toolbarPosition="bottom"
   style={{ 
@@ -156,7 +156,7 @@ function DocsPage({ content }) {
     }
   }, [debouncedContent]);
 
-  return <ContentBlocksEditor ... />;
+  return <AuthorlyEditor ... />;
 }`,
   },
   {
@@ -175,7 +175,7 @@ function DocsPage({ content }) {
 }
 
 // Component
-<ContentBlocksEditor 
+<AuthorlyEditor 
   className="custom-editor"
   darkMode={false}
 />`,
@@ -201,7 +201,7 @@ function DocsPage({ content }) {
 
   return (
     <>
-      <ContentBlocksEditor ref={editorRef} />
+      <AuthorlyEditor ref={editorRef} />
       <button onClick={() => insertImage('...')}>
         Insert Image
       </button>

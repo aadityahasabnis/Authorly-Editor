@@ -148,7 +148,7 @@ You can mix different list types within nested structures:
 
 ## Checklist Interactions
 
-Checklists are interactive in both the editor and rendered output (when using ContentBlocksRenderer):
+Checklists are interactive in both the editor and rendered output (when using AuthorlyRenderer):
 
 ### In the Editor
 
@@ -158,12 +158,12 @@ Checklists are interactive in both the editor and rendered output (when using Co
 
 ### In Rendered Content
 
-When you use the `ContentBlocksRenderer` component, checkboxes remain interactive:
+When you use the `AuthorlyRenderer` component, checkboxes remain interactive:
 
 ```tsx
-import { ContentBlocksRenderer } from 'authorly-editor';
+import { AuthorlyRenderer } from 'authorly-editor';
 
-<ContentBlocksRenderer 
+<AuthorlyRenderer 
   html={content}
   enableInteractiveChecklists={true} // Enable checkbox interaction
 />
@@ -259,7 +259,7 @@ Lists generate clean, semantic HTML that's easy to style and parse:
 
 2. Import the editor
    ```tsx
-   import { ContentBlocksEditor } from 'authorly-editor';
+   import { AuthorlyEditor } from 'authorly-editor';
    ```
 
 3. Add it to your component
@@ -327,7 +327,7 @@ Lists in Authorly follow accessibility best practices:
 
 ### Checklist Not Interactive
 
-- Ensure you're using `ContentBlocksRenderer`
+- Ensure you're using `AuthorlyRenderer`
 - Enable `enableInteractiveChecklists` prop
 - Check that JavaScript is enabled
 

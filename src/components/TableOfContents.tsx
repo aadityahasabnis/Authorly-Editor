@@ -3,8 +3,8 @@
 import dynamic from 'next/dynamic';
 
 // Dynamically import TOC to avoid SSR issues
-const TableOfContentsComponent = dynamic(
-  () => import('authorly-editor').then((mod) => mod.TableOfContents),
+const AuthorlyTOC = dynamic(
+  () => import('authorly-editor').then((mod) => mod.AuthorlyTOC),
   { 
     ssr: false,
     loading: () => (
@@ -27,5 +27,5 @@ interface TableOfContentsProps {
 }
 
 export default function TableOfContents(props: TableOfContentsProps) {
-  return <TableOfContentsComponent {...props} />;
+  return <AuthorlyTOC {...props} />;
 }

@@ -1,12 +1,12 @@
 # EditorRef API
 
-API reference for methods available on the ContentBlocksEditor ref. Use these methods to programmatically control the editor.
+API reference for methods available on the AuthorlyEditor ref. Use these methods to programmatically control the editor.
 
 ## Usage
 
 ```tsx
 import { useRef } from 'react';
-import { ContentBlocksEditor, EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, EditorRef } from 'authorly-editor';
 
 function MyEditor() {
   const editorRef = useRef<EditorRef>(null);
@@ -19,7 +19,7 @@ function MyEditor() {
   return (
     <>
       <button onClick={handleSave}>Save</button>
-      <ContentBlocksEditor ref={editorRef} />
+      <AuthorlyEditor ref={editorRef} />
     </>
   );
 }
@@ -347,7 +347,7 @@ editorRef.current?.getEditor()?.removeBlock('block-id-123');
 
 ```tsx
 import { useRef, useState } from 'react';
-import { ContentBlocksEditor, EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, EditorRef } from 'authorly-editor';
 
 function FullFeaturedEditor() {
   const editorRef = useRef<EditorRef>(null);
@@ -430,7 +430,7 @@ function FullFeaturedEditor() {
         <span>Words: {wordCount}</span>
       </div>
 
-      <ContentBlocksEditor 
+      <AuthorlyEditor 
         ref={editorRef}
         onChange={updateStats}
         autoFocus
@@ -483,7 +483,7 @@ const debouncedSave = useDebounce(() => {
   localStorage.setItem('draft', content);
 }, 1000);
 
-<ContentBlocksEditor 
+<AuthorlyEditor 
   ref={editorRef}
   onChange={(html) => {
     setContent(html);
@@ -572,5 +572,5 @@ const exportAsJSON = () => {
 
 - [Editor Props](/docs/api/editor-props) - Component props reference
 - [Events API](/docs/api/events) - Event handling
-- [ContentBlocksEditor](/docs/components/editor) - Component documentation
+- [AuthorlyEditor](/docs/components/editor) - Component documentation
 - [Quick Start](/docs/quick-start) - Getting started guide

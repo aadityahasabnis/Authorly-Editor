@@ -299,7 +299,7 @@ Currently, keyboard shortcuts are not customizable. If you need custom shortcuts
 ### Example: Custom Shortcut Wrapper
 
 ```tsx
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 import { useRef } from 'react';
 
 function EditorWithCustomShortcuts() {
@@ -316,7 +316,7 @@ function EditorWithCustomShortcuts() {
 
   return (
     <div onKeyDown={handleKeyDown}>
-      <ContentBlocksEditor ref={editorRef} />
+      <AuthorlyEditor ref={editorRef} />
     </div>
   );
 }

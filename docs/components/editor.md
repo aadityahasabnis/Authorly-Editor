@@ -1,6 +1,8 @@
 # Editor Component
 
-The `ContentBlocksEditor` is the main component for creating and editing rich text content. It provides a complete block-based editing experience with 21+ block types.
+The `AuthorlyEditor` is the main component for creating and editing rich text content. It provides a complete block-based editing experience with 16 block types.
+
+> **Note:** `ContentBlocksEditor` is a deprecated alias that still works for backwards compatibility.
 
 ## Overview
 
@@ -8,18 +10,19 @@ Authorly's editor outputs pure, semantic HTML—not JSON or proprietary formats.
 
 ### Key Features
 
-- **21+ Block Types** — Paragraphs, headings, lists, code, images, tables, and more
+- **16 Block Types** — Paragraphs, headings, lists, code, images, tables, and more
 - **Pure HTML Output** — No JSON, just clean semantic HTML
-- **Inline Formatting** — Bold, italic, underline, strikethrough, code, links
+- **Inline Formatting** — Bold, italic, underline, strikethrough, code, links, colors, highlights
 - **Drag & Drop** — Reorder blocks by dragging
 - **Keyboard Shortcuts** — Full keyboard navigation and shortcuts
 - **Dark Mode** — Built-in dark theme support
+- **Cloud Uploads** — Built-in Cloudinary & S3 support
 - **Type-Safe** — Full TypeScript support with exported types
 
 ## Import
 
 ```tsx
-import { ContentBlocksEditor, type EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, type EditorRef } from 'authorly-editor';
 import 'authorly-editor/styles';
 ```
 
@@ -29,14 +32,14 @@ import 'authorly-editor/styles';
 'use client'; // For Next.js App Router
 
 import { useState } from 'react';
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 import 'authorly-editor/styles';
 
 export default function MyEditor() {
   const [content, setContent] = useState('<p>Start writing...</p>');
 
   return (
-    <ContentBlocksEditor
+    <AuthorlyEditor
       initialContent={content}
       onChange={setContent}
     />
@@ -63,7 +66,7 @@ export default function MyEditor() {
 |------|------|---------|-------------|
 | `darkMode` | `boolean` | `false` | Enable dark theme styling |
 | `showToolbar` | `boolean` | `true` | Show or hide the formatting toolbar |
-| `toolbarPosition` | `'top' \| 'bottom'` | `'top'` | Position of the toolbar |
+| `toolbarPosition` | `'top' \| 'bottom' \| 'floating'` | `'top'` | Position of the toolbar |
 | `placeholder` | `string` | `'Type "/" for commands...'` | Placeholder text shown when editor is empty |
 | `className` | `string` | `''` | Custom CSS class for the container |
 | `style` | `React.CSSProperties` | `{}` | Inline styles for the container |
@@ -79,13 +82,23 @@ export default function MyEditor() {
 | `blocks` | `BlockType[]` | All blocks | Array of enabled block types |
 | `inlineFormats` | `InlineFormat[]` | All formats | Array of enabled inline formats |
 
+### Upload Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `imageUploadConfig` | `UploadConfig` | - | Image upload configuration (Cloudinary, S3, or custom) |
+| `onUploadStart` | `(filename: string) => void` | - | Called when image upload starts |
+| `onUploadSuccess` | `(result: UploadResult) => void` | - | Called when image upload succeeds |
+| `onUploadError` | `(error: Error) => void` | - | Called when image upload fails |
+| `onUploadProgress` | `(progress: UploadProgress) => void` | - | Called to track upload progress |
+
 ## Using the Editor Ref
 
 Access editor methods programmatically using a ref:
 
 ```tsx
 import { useRef } from 'react';
-import { ContentBlocksEditor, type EditorRef } from 'authorly-editor';
+import { AuthorlyEditor, type EditorRef } from 'authorly-editor';
 
 export default function MyEditor() {
   const editorRef = useRef<EditorRef>(null);
@@ -116,7 +129,7 @@ export default function MyEditor() {
         <button onClick={handleClear}>Clear</button>
         <button onClick={handleFocus}>Focus Editor</button>
       </div>
-      <ContentBlocksEditor ref={editorRef} />
+      <AuthorlyEditor ref={editorRef} />
     </div>
   );
 }
@@ -126,13 +139,28 @@ export default function MyEditor() {
 
 | Method | Signature | Description |
 |--------|-----------|-------------|
-| `getHTML()` | `() => string` | Get current HTML content |
+| `getHTML()` | `(options?: GetHTMLOptions) => string` | Get current HTML content |
 | `setHTML(html)` | `(html: string) => void` | Set editor content (replaces all) |
 | `getText()` | `() => string` | Get plain text content (no HTML tags) |
 | `focus()` | `() => void` | Focus the editor |
 | `blur()` | `() => void` | Remove focus from editor |
 | `insertBlock(type, data)` | `(type: BlockType, data?: Partial<BlockData>) => HTMLElement \| null` | Programmatically insert a block |
 | `getEditor()` | `() => EditorInstance \| null` | Get the underlying editor instance |
+
+### GetHTMLOptions
+
+```tsx
+interface GetHTMLOptions {
+  /** Remove editor UI elements like controls (default: true) */
+  stripEditorUI?: boolean;
+  /** Remove data-block-id attributes (default: true) */
+  stripDataAttributes?: boolean;
+  /** Add Cloudinary optimization params (default: true) */
+  optimizeImages?: boolean;
+  /** Generate responsive srcset for Cloudinary images (default: true) */
+  addResponsiveImages?: boolean;
+}
+```
 
 ## Common Patterns
 
@@ -161,7 +189,7 @@ export default function MyEditor() {
 
   return (
     <div>
-      <ContentBlocksEditor
+      <AuthorlyEditor
         initialContent={content}
         onChange={setContent}
         onSave={handleSave}  // Ctrl/Cmd+S
@@ -190,7 +218,7 @@ export default function MyEditor() {
       <button onClick={() => setDarkMode(!darkMode)}>
         {darkMode ? '☀️ Light' : '🌙 Dark'}
       </button>
-      <ContentBlocksEditor
+      <AuthorlyEditor
         initialContent={content}
         onChange={setContent}
         darkMode={darkMode}
@@ -205,7 +233,7 @@ export default function MyEditor() {
 ```tsx
 export default function DocumentViewer({ content }: { content: string }) {
   return (
-    <ContentBlocksEditor
+    <AuthorlyEditor
       initialContent={content}
       readOnly={true}
       showToolbar={false}
@@ -217,7 +245,7 @@ export default function DocumentViewer({ content }: { content: string }) {
 ### Custom Toolbar Position
 
 ```tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   initialContent={content}
   onChange={setContent}
   toolbarPosition="bottom"  // Toolbar at bottom instead of top
@@ -227,7 +255,7 @@ export default function DocumentViewer({ content }: { content: string }) {
 ### Limiting Block Types
 
 ```tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   initialContent={content}
   onChange={setContent}
   blocks={['paragraph', 'heading', 'bulletList', 'numberedList', 'code']}
@@ -249,7 +277,7 @@ The `blocks` prop accepts an array of these block type strings:
 - `'video'` — Video embed
 - `'table'` — Interactive table
 - `'divider'` — Horizontal rule
-- `'callout'` — Highlighted callout box
+- `'callout'` — Highlighted callout box (info, warning, error, success, note)
 - `'accordion'` — Collapsible details/summary
 - `'linkPreview'` — Rich URL preview card
 - `'date'` — Date picker
@@ -265,6 +293,8 @@ The `inlineFormats` prop accepts an array of these format strings:
 - `'strikethrough'` — Strikethrough text
 - `'code'` — Inline code (Ctrl/Cmd+Shift+X)
 - `'link'` — Hyperlinks (Ctrl/Cmd+K)
+- `'textColor'` — Text color
+- `'highlight'` — Background highlight
 
 ## Styling
 
@@ -289,7 +319,7 @@ The editor uses a class-based styling system with the prefix `cb-` by default:
 ### Custom Class Prefix
 
 ```tsx
-<ContentBlocksEditor
+<AuthorlyEditor
   classPrefix="my-editor"  // Changes cb- to my-editor-
   initialContent={content}
   onChange={setContent}
@@ -300,12 +330,15 @@ The editor uses a class-based styling system with the prefix `cb-` by default:
 
 ```tsx
 import type {
-  ContentBlocksEditorProps,
+  AuthorlyEditorProps,
   EditorRef,
   EditorInstance,
   BlockType,
   BlockData,
   InlineFormat,
+  UploadConfig,
+  UploadResult,
+  UploadProgress,
 } from 'authorly-editor';
 ```
 
@@ -317,7 +350,7 @@ For Next.js, use dynamic imports to avoid SSR issues:
 import dynamic from 'next/dynamic';
 
 const Editor = dynamic(
-  () => import('authorly-editor').then(mod => mod.ContentBlocksEditor),
+  () => import('authorly-editor').then(mod => mod.AuthorlyEditor),
   { ssr: false }
 );
 

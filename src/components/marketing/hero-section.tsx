@@ -49,8 +49,8 @@ export function HeroSection({ version }: HeroSectionProps) {
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-float" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-[120px] animate-float" style={{ animationDelay: '2s' }} />
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="py-24 md:py-32 lg:py-40">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative">
+        <div className="py-24 md:py-32">
           {/* Main Content */}
           <div className="text-center max-w-5xl mx-auto">
             {/* Version Badge */}

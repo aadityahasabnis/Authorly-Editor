@@ -300,14 +300,14 @@ Authorly works seamlessly with Tailwind CSS. You can use Tailwind utility classe
 ### Using Tailwind Utilities
 
 ```tsx
-import { ContentBlocksEditor } from 'authorly-editor';
-import 'authorly-editor/dist/style.css';
+import { AuthorlyEditor } from 'authorly-editor';
+import 'authorly-editor/styles';
 
 function App() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="rounded-lg shadow-xl border border-gray-200">
-        <ContentBlocksEditor 
+        <AuthorlyEditor 
           className="min-h-[600px]"
         />
       </div>
@@ -377,7 +377,7 @@ module.exports = {
 
 ```tsx
 import { useState } from 'react';
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 
 function ThemedEditor() {
   const [isDark, setIsDark] = useState(false);
@@ -387,7 +387,7 @@ function ThemedEditor() {
       <button onClick={() => setIsDark(!isDark)}>
         Toggle {isDark ? 'Light' : 'Dark'} Mode
       </button>
-      <ContentBlocksEditor darkMode={isDark} />
+      <AuthorlyEditor darkMode={isDark} />
     </div>
   );
 }
@@ -397,7 +397,7 @@ function ThemedEditor() {
 
 ```tsx
 import { useEffect, useState } from 'react';
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 
 function SystemThemedEditor() {
   const [isDark, setIsDark] = useState(false);
@@ -415,7 +415,7 @@ function SystemThemedEditor() {
 
   return (
     <div className={isDark ? 'cb-dark' : ''}>
-      <ContentBlocksEditor darkMode={isDark} />
+      <AuthorlyEditor darkMode={isDark} />
     </div>
   );
 }
@@ -427,14 +427,14 @@ function SystemThemedEditor() {
 'use client';
 
 import { useTheme } from 'next-themes';
-import { ContentBlocksEditor } from 'authorly-editor';
+import { AuthorlyEditor } from 'authorly-editor';
 
 export default function Editor() {
   const { theme } = useTheme();
 
   return (
     <div className={theme === 'dark' ? 'cb-dark' : ''}>
-      <ContentBlocksEditor darkMode={theme === 'dark'} />
+      <AuthorlyEditor darkMode={theme === 'dark'} />
     </div>
   );
 }
@@ -606,11 +606,11 @@ Always test custom styles in both light and dark modes to ensure proper contrast
 
 ```tsx
 <div className="grid grid-cols-2 gap-4">
-  <ContentBlocksEditor 
-    value={content}
+  <AuthorlyEditor 
+    initialContent={content}
     onChange={setContent}
   />
-  <ContentBlocksRenderer content={content} />
+  <AuthorlyRenderer html={content} />
 </div>
 ```
 
